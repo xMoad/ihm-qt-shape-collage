@@ -67,10 +67,10 @@ private slots:
 
     void on_pushButtonReinitFormeTaille_clicked();
 
+    void on_pushButtonCreate_clicked();
+
 private:
     Ui::MainWindow *ui;
-
-    QStringList *imgPaths;
 
     DialogPolygon *dialogPolygon;
 

@@ -17,7 +17,7 @@ public:
     void calculDistancePhotos();
 
     void drawApercu(QPainter *painter);
-    //QPicture * getImage();
+    void getImage(QString path);
 
 private:
     QPolygon *polygone;

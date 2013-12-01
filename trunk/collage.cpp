@@ -41,10 +41,24 @@ void Collage::drawApercu(QPainter *painter)
     painter->drawPolygon(*polygone);
 }
 
-/*QPicture * Collage::getImage()
+void Collage::getImage(QString path)
 {
-    return new QPicture();
-}*/
+    QImage img(taille.width(),taille.height(), QImage::Format_ARGB32);
+    img.fill(Qt::white);
+
+    QPainter painter;
+
+    painter.begin(&img);
+
+    painter.rotate(30);
+
+    painter.drawImage(100,100,QImage(imgPaths->first()).scaled(150,150,Qt::KeepAspectRatio));
+
+    painter.end();
+
+    img.save(path);
+
+}
 
 
 
