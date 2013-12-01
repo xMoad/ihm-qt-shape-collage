@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     dialogPolygon = new DialogPolygon();
-    imgPaths = new QStringList();
 
     ui->radioButtonToutesPhotos->setChecked(true);
 }
@@ -50,6 +49,7 @@ void MainWindow::on_pushButton_clicked()
     foreach (QString path, paths)
     {
         item = new QListWidgetItem(QIcon(path), Tools::getFileNameFromPath(path).left(20));
+        item->setData(Qt::UserRole, path);
         ui->listWidgetImages->addItem(item);
     }
 
@@ -115,6 +115,7 @@ void MainWindow::on_pushButtonAddFromFolder_clicked()
                 (fileExtension == "jpeg"))
         {
             item = new QListWidgetItem(QIcon(directoryWalker.filePath()), directoryWalker.fileName().left(20));
+            item->setData(Qt::UserRole, directoryWalker.filePath());
             ui->listWidgetImages->addItem(item);
         }
     }
@@ -134,7 +135,6 @@ void MainWindow::on_pushButtonApercu_clicked()
 {
     if (ui->listWidgetImages->count() > 0)
     {
-        majCollage();
         renderApercu();
     }
     else
@@ -146,6 +146,13 @@ void MainWindow::on_pushButtonApercu_clicked()
 
 void MainWindow::majCollage()
 {
+    QStringList *imgPaths = new QStringList();
+
+    for(int i = 0; i < ui->listWidgetImages->count(); ++i)
+    {
+        imgPaths->append(ui->listWidgetImages->item(i)->data(Qt::UserRole).toString());
+    }
+
     QPolygon *polygone;
 
     if (ui->radioButtonPolygone->isChecked())
@@ -364,4 +371,23 @@ void MainWindow::on_pushButtonReinitFormeTaille_clicked()
 
     ui->spinBoxDistancePhotos->setValue(90);
     ui->horizontalSliderDistancePhotos->setValue(90);
+}
+
+void MainWindow::on_pushButtonCreate_clicked()
+{
+    if (ui->listWidgetImages->count() > 0)
+    {
+        QString path = QFileDialog::getSaveFileName(this, tr("Save as image"), "", tr("PNG file (*.png)"));
+
+        if (!path.isEmpty())
+        {
+           majCollage();
+           collage->getImage(path);
+        }
+    }
+    else
+    {
+        QMessageBox::critical(this, "Erreur",
+                                        "Il n'y a aucune photos chargée.\nVeuillez charger des photos puis ré-essayer.");
+    }
 }
