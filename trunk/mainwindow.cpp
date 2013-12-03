@@ -216,7 +216,7 @@ void MainWindow::renderApercu()
     QPen pen(Qt::black, 2, Qt::SolidLine);
     painter.setPen(pen);
 
-    painter.drawPolygon(*collage->getPolygone());
+    collage->drawApercu(&painter);
 
     ui->labelApercu->setPixmap(*imageApercu);
 }
