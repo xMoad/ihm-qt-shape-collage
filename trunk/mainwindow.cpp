@@ -135,6 +135,7 @@ void MainWindow::on_pushButtonApercu_clicked()
 {
     if (ui->listWidgetImages->count() > 0)
     {
+        majCollage();
         renderApercu();
     }
     else

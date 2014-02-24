@@ -59,6 +59,36 @@ QPolygon * Collage::getPolygoneApercu()
 void Collage::drawApercu(QPainter *painter)
 {
     painter->drawPolygon(*polygoneApercu);
+
+    QTransform * trans;
+    qreal angle;
+
+    for (int i = 0; i < 400; i += 10)
+    {
+        for (int j = 0; j < 240; j += 10)
+        {
+            angle = (qreal) (qrand() % (360 + 1));
+
+            /*if (isImageInCollage(i,j,50,50,angle))
+            {*/
+                trans = new QTransform();
+                // Move to the center of the widget
+                trans->translate(400/2, 240/2);
+
+                // Do the rotation
+                trans->rotate(angle);
+
+                // Move to the center of the rect
+                trans->translate((i + 50/2), (j + 50/2));
+
+                painter->setTransform(*trans);
+
+                painter->drawRect(0,0,50,50);
+
+                painter->resetTransform();
+            //}
+        }
+    }
 }
 
 QPoint Collage::rotatePoint(QPoint p, qreal r)
@@ -66,6 +96,15 @@ QPoint Collage::rotatePoint(QPoint p, qreal r)
     return QPoint((int) (p.x() * cos(r) - p.y() * sin(r)), (int) (p.x() * sin(r) + p.y() * cos(r)));
 }
 
+bool Collage::isRectInPolygon(QRect * rect, QPolygon * polygon)
+{
+    QPolygon * p = new QPolygon(rect);
+
+}
+
+// faux :
+// - vérifier que les points sont contenus (rect to polygon puis translate rotate puis vérification des points)
+// - vérifier que les lignes sont contenus (polygon intersect lignes ou inverse)
 bool Collage::isImageInCollage(int x, int y, int w, int h, qreal r)
 {
     r = r * (atan(1.0)*4) / 180.0;
