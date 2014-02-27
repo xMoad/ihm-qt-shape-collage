@@ -61,56 +61,88 @@ void Collage::drawApercu(QPainter *painter)
     painter->drawPolygon(*polygoneApercu);
 
     QTransform * trans;
-    qreal angle;
+    int angle;
+    QRect * rect;
 
-    for (int i = 0; i < 400; i += 10)
+    for (int i = 0; i < 400; i += 5)
     {
-        for (int j = 0; j < 240; j += 10)
+        for (int j = 0; j < 240; j += 5)
         {
-            angle = (qreal) (qrand() % (360 + 1));
+            angle = (qrand() % (360 + 1));
 
-            /*if (isImageInCollage(i,j,50,50,angle))
-            {*/
+            rect = new QRect(i,j,50,50);
+
+            if (isRectInPolygon(rect, polygoneApercu, angle))
+            {
                 trans = new QTransform();
-                // Move to the center of the widget
-                trans->translate(400/2, 240/2);
-
-                // Do the rotation
-                trans->rotate(angle);
 
                 // Move to the center of the rect
                 trans->translate((i + 50/2), (j + 50/2));
 
+                // Do the rotation
+                trans->rotate(angle);
+
                 painter->setTransform(*trans);
 
-                painter->drawRect(0,0,50,50);
+                painter->drawRect(-25,-25,50,50);
 
                 painter->resetTransform();
-            //}
+            }
         }
     }
 }
 
-QPoint Collage::rotatePoint(QPoint p, qreal r)
+QPoint Collage::rotatePoint(QPoint center, QPoint point, int angleRotation)
 {
-    return QPoint((int) (p.x() * cos(r) - p.y() * sin(r)), (int) (p.x() * sin(r) + p.y() * cos(r)));
+    float angle = angleRotation * PI / 180.0;
+
+    qreal radius = sqrt(abs(pow((float)(point.x() - center.x()),2) + pow((float)(point.y() - center.y()), 2)));
+
+    return QPoint((int) (center.x() + radius * cos(angle)),
+                  (int) (center.y() + radius * sin(angle)));
 }
 
-bool Collage::isRectInPolygon(QRect * rect, QPolygon * polygon)
+bool Collage::isPolygonEquals(QPolygon * polygon1, QPolygon * polygon2)
 {
-    QPolygon * p = new QPolygon(rect);
+    QList<QPoint> pointsP1 = polygon1->toList();
+    QList<QPoint> pointsP2 = polygon2->toList();
 
+    bool isEqual;
+
+    foreach (QPoint p1, pointsP1)
+    {
+        isEqual = false;
+
+        foreach (QPoint p2, pointsP2)
+        {
+            if ((p1.x() == p2.x()) && (p1.y() == p2.y()))
+                isEqual = true;
+        }
+
+        if (!isEqual)
+            return false;
+    }
+
+    return true;
 }
 
-// faux :
-// - vérifier que les points sont contenus (rect to polygon puis translate rotate puis vérification des points)
-// - vérifier que les lignes sont contenus (polygon intersect lignes ou inverse)
-bool Collage::isImageInCollage(int x, int y, int w, int h, qreal r)
+bool Collage::isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation)
 {
-    r = r * (atan(1.0)*4) / 180.0;
+    QPolygon * rectPolygon = new QPolygon(4);
+    rectPolygon->setPoint(0, rotatePoint(rect->center(), rect->bottomRight(), (angleRotation+45)%360));
+    rectPolygon->setPoint(1, rotatePoint(rect->center(), rect->bottomLeft(), (angleRotation+135)%360));
+    rectPolygon->setPoint(2, rotatePoint(rect->center(), rect->topLeft(), (angleRotation+225)%360));
+    rectPolygon->setPoint(3, rotatePoint(rect->center(), rect->topRight(), (angleRotation+315)%360));
 
-    return (polygone->containsPoint(rotatePoint(QPoint(x,y), r), Qt::WindingFill) && polygone->containsPoint(rotatePoint(QPoint(x+w,y), r), Qt::WindingFill) &&
-            polygone->containsPoint(rotatePoint(QPoint(x,y+h), r), Qt::WindingFill) && polygone->containsPoint(rotatePoint(QPoint(x+w,y+h), r), Qt::WindingFill));
+    QList<QPoint> points = rectPolygon->toList();
+
+    foreach (QPoint p, points)
+    {
+        if (!polygon->containsPoint(p, Qt::OddEvenFill))
+            return false;
+    }
+
+    return isPolygonEquals(&polygon->united(*rectPolygon), polygon);
 }
 
 void Collage::getImage(QString path)
@@ -124,14 +156,14 @@ void Collage::getImage(QString path)
 
     painter.rotate(30);
 
-    if (isImageInCollage(100,100,150,150,30))
+    if (isRectInPolygon(new QRect(100,100,150,150), polygone, 30))
         painter.drawImage(100,100,QImage(imgPaths->first()).scaled(150,150,Qt::KeepAspectRatio));
 
     painter.rotate(-30);
 
     painter.rotate(30);
 
-    if (isImageInCollage(500,500,150,150,30))
+    if (isRectInPolygon(new QRect(500,500,150,150), polygone, 30))
         painter.drawImage(500,500,QImage(imgPaths->first()).scaled(150,150,Qt::KeepAspectRatio));
 
     painter.end();
