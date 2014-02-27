@@ -119,26 +119,21 @@ void Collage::drawApercu(QPainter *painter)
         {
             angle = (qrand() % (360 + 1));
 
-            rect = new QRect(i,j,pixmapSize.width(),pixmapSize.height());
-
-            qDebug("pixamp width : %d", pixmapSize.width());
-            qDebug("pixamp height : %d", pixmapSize.height());
+            rect = new QRect(i,j,pixmap.width(),pixmap.height());
 
             if (isRectInPolygon(rect, polygoneApercu, angle))
             {
                 trans = new QTransform();
 
                 // Move to the center of the rect
-                trans->translate((i + pixmapSize.width()/2), (j + pixmapSize.height()/2));
+                trans->translate((i + pixmap.width()/2), (j + pixmap.height()/2));
 
                 // Do the rotation
                 trans->rotate(angle);
 
                 painter->setTransform(*trans);
 
-                painter->drawPixmap(-pixmapSize.width()/2,-pixmapSize.height()/2,pixmapSize.width(),pixmapSize.height(), pixmap);
-
-                qDebug("drawing");
+                painter->drawPixmap(-pixmap.width()/2,-pixmap.height()/2,pixmap.width(),pixmap.height(), pixmap);
 
                 painter->resetTransform();
 
@@ -146,7 +141,7 @@ void Collage::drawApercu(QPainter *painter)
 
                 paths->removeFirst();
 
-                if (imgPaths->isEmpty())
+                if (paths->isEmpty())
                     return;
 
                 pixmap = QPixmap(paths->first());
