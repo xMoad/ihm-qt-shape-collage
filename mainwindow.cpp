@@ -151,7 +151,7 @@ void MainWindow::majCollage()
 
     for(int i = 0; i < ui->listWidgetImages->count(); ++i)
     {
-        imgPaths->append(ui->listWidgetImages->item(i)->data(Qt::UserRole).toString());
+        imgPaths->push_back(ui->listWidgetImages->item(i)->data(Qt::UserRole).toString());
     }
 
     QPolygon *polygone;
