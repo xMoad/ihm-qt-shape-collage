@@ -4,6 +4,9 @@
 #include <QStringList>
 #include <QPainter>
 #include <math.h>
+
+#define PI 3.14159265
+
 class Collage
 {
 public:
@@ -27,8 +30,9 @@ private:
     int nbPhotos;
     int distancePhotos;
 
-    QPoint rotatePoint(QPoint p, qreal r);
-    bool isImageInCollage(int x, int y, int w, int h, qreal r);
+    QPoint rotatePoint(QPoint center, QPoint point, int angle);
+    bool isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation);
+    bool isPolygonEquals(QPolygon * polygon1, QPolygon * polygon2);
 };
 
 #endif // COLLAGE_H
