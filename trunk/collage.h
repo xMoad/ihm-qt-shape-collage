@@ -33,9 +33,10 @@ private:
     QPoint getAprecuCoords(QPoint p);
     QSize getAprecuSize(QSize s);
     QPoint getCoordsFromAprecuCoords(QPoint p);
-    QPixmap placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle);
+    //QPixmap placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle);
 
     QList<QPixmap> getResizedPixmaps();
+    void sortByWidth(QList<QPixmap> pixmaps);
 
     QPoint rotatePoint(QPoint center, QPoint point, int angle);
     bool isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation);

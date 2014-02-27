@@ -95,6 +95,32 @@ QPoint Collage::getCoordsFromAprecuCoords(QPoint p)
     return QPoint(x, y);
 }
 
+void Collage::sortByWidth(QList<QPixmap> pixmaps)
+{
+    if (pixmaps.size() < 2)
+        return;
+
+    bool changed = false;
+    QPixmap tmp;
+
+    while(!changed)
+    {
+        changed = false;
+
+        for(int j=1; j<pixmaps.size(); j++)
+        {
+            if (pixmaps.at(j-1).width() > pixmaps.at(j).width())
+            {
+                tmp = pixmaps[j];
+                pixmaps[j] = pixmaps[j-1];
+                pixmaps[j-1] = tmp;
+
+                changed = true;
+            }
+        }
+    }
+}
+
 QList<QPixmap> Collage::getResizedPixmaps()
 {
     QList<QPixmap> images = QList<QPixmap>();
@@ -114,7 +140,7 @@ QList<QPixmap> Collage::getResizedPixmaps()
 }
 
 // return a pixmap from pixmaps placed in the polygon at the position [x,y] with the rotation(angle), or null
-QPixmap Collage::placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle)
+/*QPixmap Collage::placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle)
 {
     QRect * rect;
 
@@ -131,7 +157,7 @@ QPixmap Collage::placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x,
     }
 
     return NULL;
-}
+}*/
 
 void Collage::drawApercu(QPainter *painter)
 {
@@ -145,6 +171,7 @@ void Collage::drawApercu(QPainter *painter)
     QRect * rect;
 
     QList<QPixmap> pixmaps = getResizedPixmaps();
+    sortByWidth(pixmaps);
     QPixmap pixmap = pixmaps.first();
     pixmap = pixmap.scaled(getAprecuSize(pixmap.size()),  Qt::KeepAspectRatio);
 
