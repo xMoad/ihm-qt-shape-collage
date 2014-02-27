@@ -12,21 +12,9 @@ Collage::Collage(QPolygon *polygone, QStringList * imgPaths, QSize &taille, int 
 
     QList<QPoint> points = polygone->toList();
 
-    int x,y;
-
     foreach (QPoint p, points)
     {
-        if (p.x() == 0)
-            x = 0;
-        else
-            x = (int) (p.x() * taille.width() / 400);
-
-        if (p.y() == 0)
-            y = 0;
-        else
-            y = (int) (p.y() * taille.height() / 240);
-
-        this->polygone->push_back(QPoint(x, y));
+        this->polygone->push_back(getCoordsFromAprecuCoords(p));
     }
 }
 
@@ -56,13 +44,74 @@ QPolygon * Collage::getPolygoneApercu()
     return polygoneApercu;
 }
 
+QPoint Collage::getAprecuCoords(QPoint p)
+{
+    int x, y;
+
+    if (p.x() == 0)
+        x = 0;
+    else
+        x = (int) (p.x() * 400 / taille.width());
+
+    if (p.y() == 0)
+        y = 0;
+    else
+        y = (int) (p.y() * 240 / taille.height());
+
+    return QPoint(x, y);
+}
+
+QSize Collage::getAprecuSize(QSize s)
+{
+    int h, w;
+
+    if (s.width() == 0)
+        w = 0;
+    else
+        w = (int) (s.width() * 400 / taille.width());
+
+    if (s.height() == 0)
+        h = 0;
+    else
+        h = (int) (s.height() * 240 / taille.height());
+
+    return QSize(w, h);
+}
+
+QPoint Collage::getCoordsFromAprecuCoords(QPoint p)
+{
+    int x, y;
+
+    if (p.x() == 0)
+        x = 0;
+    else
+        x = (int) (p.x() * taille.width() / 400);
+
+    if (p.y() == 0)
+        y = 0;
+    else
+        y = (int) (p.y() * taille.height() / 240);
+
+    return QPoint(x, y);
+}
+
 void Collage::drawApercu(QPainter *painter)
 {
     painter->drawPolygon(*polygoneApercu);
 
+    if (imgPaths->isEmpty())
+        return;
+
+    QStringList * paths = new QStringList(*imgPaths);
+
     QTransform * trans;
     int angle;
+
+    QPixmap pixmap = QPixmap(paths->first());
+    QSize pixmapSize = getAprecuSize(pixmap.size());
     QRect * rect;
+
+    pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
 
     for (int i = 0; i < 400; i += 5)
     {
@@ -70,23 +119,39 @@ void Collage::drawApercu(QPainter *painter)
         {
             angle = (qrand() % (360 + 1));
 
-            rect = new QRect(i,j,50,50);
+            rect = new QRect(i,j,pixmapSize.width(),pixmapSize.height());
+
+            qDebug("pixamp width : %d", pixmapSize.width());
+            qDebug("pixamp height : %d", pixmapSize.height());
 
             if (isRectInPolygon(rect, polygoneApercu, angle))
             {
                 trans = new QTransform();
 
                 // Move to the center of the rect
-                trans->translate((i + 50/2), (j + 50/2));
+                trans->translate((i + pixmapSize.width()/2), (j + pixmapSize.height()/2));
 
                 // Do the rotation
                 trans->rotate(angle);
 
                 painter->setTransform(*trans);
 
-                painter->drawRect(-25,-25,50,50);
+                painter->drawPixmap(-pixmapSize.width()/2,-pixmapSize.height()/2,pixmapSize.width(),pixmapSize.height(), pixmap);
+
+                qDebug("drawing");
 
                 painter->resetTransform();
+
+                // get next qpixmap or exit
+
+                paths->removeFirst();
+
+                if (imgPaths->isEmpty())
+                    return;
+
+                pixmap = QPixmap(paths->first());
+                pixmapSize = getAprecuSize(pixmap.size());
+                pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
             }
         }
     }

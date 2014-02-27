@@ -30,6 +30,10 @@ private:
     int nbPhotos;
     int distancePhotos;
 
+    QPoint getAprecuCoords(QPoint p);
+    QSize getAprecuSize(QSize s);
+    QPoint getCoordsFromAprecuCoords(QPoint p);
+
     QPoint rotatePoint(QPoint center, QPoint point, int angle);
     bool isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation);
     bool isPolygonEquals(QPolygon * polygon1, QPolygon * polygon2);
