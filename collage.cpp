@@ -95,6 +95,44 @@ QPoint Collage::getCoordsFromAprecuCoords(QPoint p)
     return QPoint(x, y);
 }
 
+QList<QPixmap> Collage::getResizedPixmaps()
+{
+    QList<QPixmap> images = QList<QPixmap>();
+    QPixmap pixmap;
+    QSize pixmapSize;
+    QList<QString>::iterator path;
+
+    for (path = imgPaths->begin(); path != imgPaths->end(); ++path)
+    {
+        pixmap= QPixmap(*path);
+        pixmapSize = getAprecuSize(pixmap.size());
+        pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
+        images.push_back(pixmap);
+    }
+
+    return images;
+}
+
+// return a pixmap from pixmaps placed in the polygon at the position [x,y] with the rotation(angle), or null
+QPixmap Collage::placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle)
+{
+    QRect * rect;
+
+    for(int i=0; i<pixmaps.size();i++)
+    {
+        rect = new QRect(x,y,pixmaps.at(i).width(),pixmaps.at(i).height());
+
+        if (isRectInPolygon(rect, polygon, angle))
+        {
+            pixmaps.removeAt(i);
+
+            return pixmaps.at(i);
+        }
+    }
+
+    return NULL;
+}
+
 void Collage::drawApercu(QPainter *painter)
 {
     painter->drawPolygon(*polygoneApercu);
@@ -102,27 +140,29 @@ void Collage::drawApercu(QPainter *painter)
     if (imgPaths->isEmpty())
         return;
 
-    QStringList * paths = new QStringList(*imgPaths);
-
     QTransform * trans;
-    int angle;
-
-    QPixmap pixmap = QPixmap(paths->first());
-    QSize pixmapSize = getAprecuSize(pixmap.size());
+    int angle, i = 0, j = 0, maxHeight;
     QRect * rect;
 
-    pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
+    QList<QPixmap> pixmaps = getResizedPixmaps();
+    QPixmap pixmap = pixmaps.first();
+    pixmap = pixmap.scaled(getAprecuSize(pixmap.size()),  Qt::KeepAspectRatio);
 
-    for (int i = 0; i < 400; i += 5)
+    for (j = 0; j < 240; j += 5)
     {
-        for (int j = 0; j < 240; j += 5)
+        maxHeight = 0;
+
+        for (i = 0; i < 400; i += 5)
         {
-            angle = (qrand() % (360 + 1));
+            angle = (qrand() % (90 + 1)) - 45; // random angle between -45° and +45°
 
             rect = new QRect(i,j,pixmap.width(),pixmap.height());
 
             if (isRectInPolygon(rect, polygoneApercu, angle))
             {
+                if (pixmap.height() > maxHeight)
+                    maxHeight = pixmap.height();
+
                 trans = new QTransform();
 
                 // Move to the center of the rect
@@ -139,17 +179,58 @@ void Collage::drawApercu(QPainter *painter)
 
                 // get next qpixmap or exit
 
-                paths->removeFirst();
+                pixmaps.removeFirst();
 
-                if (paths->isEmpty())
+                if (pixmaps.isEmpty())
                     return;
 
-                pixmap = QPixmap(paths->first());
-                pixmapSize = getAprecuSize(pixmap.size());
-                pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
+                pixmap = pixmaps.first();
+                pixmap = pixmap.scaled(getAprecuSize(pixmap.size()),  Qt::KeepAspectRatio);
+
+                i += pixmap.width() * distancePhotos / 100 - 5;
             }
         }
+
+        if (maxHeight > 0)
+            j += pixmap.height() * distancePhotos / 100 - 5;
     }
+
+    /*while ((j < 240) && (!pixmaps.isEmpty()))
+    {
+        angle = (qrand() % (360 + 1));
+
+        pixmap = &placeImageAt(pixmaps, polygoneApercu, i, j, angle);
+
+        if (pixmap != NULL)
+        {
+            trans = new QTransform();
+
+            // Move to the center of the rect
+            trans->translate((i + pixmap->width()/2), (j + pixmap->height()/2));
+
+            // Do the rotation
+            trans->rotate(angle);
+
+            painter->setTransform(*trans);
+
+            painter->drawPixmap(-pixmap->width()/2,-pixmap->height()/2,pixmap->width(),pixmap->height(), *pixmap);
+
+            painter->resetTransform();
+
+            i += pixmap->width() * distancePhotos / 100;
+
+            if (i >= 400) {
+                i = 0;
+                j += pixmap->height() * distancePhotos / 100;
+            }
+        } else {
+            i += 10;
+            if (i >= 400) {
+                i = 0;
+                j += 10;
+            }
+        }
+    }*/
 }
 
 QPoint Collage::rotatePoint(QPoint center, QPoint point, int angleRotation)
