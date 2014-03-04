@@ -241,7 +241,6 @@ void Collage::ChangeScatterPlotDensity(float densityMultiplier)
     }
     else if(mAutoNbPhotos) { // On modifie la densité du nuage de points en modifiant le nombre de photos.
         mNbPhotos *= qSqrt(densityMultiplier);
-        //CalculateDistancePhotosPx(); // Le nombre de photos mNbPhotos a une influence sur la distance entre les points quand mAutoDistancePhotos est à true.
     }
     else { // Si la taille du collage, la taille des photos et le nombre de photos sont en manuel alors la distance entre 2 photos est forcément en auto.
         mDistancePhotosPx /= qSqrt(densityMultiplier);
