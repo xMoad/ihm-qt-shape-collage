@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Shape Copiage</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="groupBox">
@@ -142,9 +142,9 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>30</y>
-      <width>301</width>
-      <height>161</height>
+      <y>10</y>
+      <width>321</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="title">
@@ -179,19 +179,6 @@
       <string>Cercle</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>90</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Polygon</string>
-     </property>
-    </widget>
     <widget class="QRadioButton" name="radioButtonPolygone">
      <property name="geometry">
       <rect>
@@ -206,23 +193,10 @@
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="labelApercu">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>120</y>
-      <width>400</width>
-      <height>240</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButtonApercu">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>420</x>
       <y>450</y>
       <width>75</width>
       <height>23</height>
@@ -235,7 +209,7 @@
    <widget class="QPushButton" name="pushButtonCreate">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>550</x>
       <y>450</y>
       <width>75</width>
       <height>23</height>
@@ -249,8 +223,8 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>210</y>
-      <width>331</width>
+      <y>140</y>
+      <width>321</width>
       <height>341</height>
      </rect>
     </property>
@@ -442,34 +416,6 @@
       <string>Hauteur</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBoxUniteTailleCollage">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>60</y>
-       <width>69</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>pixels</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>pouces</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>cm</string>
-      </property>
-     </item>
-    </widget>
     <widget class="QLineEdit" name="lineEditTaillePhoto">
      <property name="geometry">
       <rect>
@@ -482,31 +428,6 @@
      <property name="text">
       <string>200</string>
      </property>
-    </widget>
-    <widget class="QComboBox" name="comboBoxUniteTaillePhoto">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>140</y>
-       <width>69</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>pixels</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>pouces</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>cm</string>
-      </property>
-     </item>
     </widget>
     <widget class="QLabel" name="label_6">
      <property name="geometry">
@@ -571,7 +492,7 @@
       <rect>
        <x>90</x>
        <y>240</y>
-       <width>82</width>
+       <width>16</width>
        <height>17</height>
       </rect>
      </property>
@@ -633,7 +554,7 @@
       <number>200</number>
      </property>
      <property name="value">
-      <number>90</number>
+      <number>100</number>
      </property>
     </widget>
     <widget class="QLabel" name="labelPourcent">
@@ -649,11 +570,40 @@
       <string>%</string>
      </property>
     </widget>
+    <widget class="QLabel" name="labelPixelsPhoto">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>140</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>pixels</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelPixelsCollage">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>60</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>pixels</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QProgressBar" name="progressBarApercu">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>390</x>
       <y>400</y>
       <width>301</width>
       <height>23</height>
@@ -666,7 +616,7 @@
    <widget class="QPushButton" name="pushButtonReinitFormeTaille">
     <property name="geometry">
      <rect>
-      <x>780</x>
+      <x>790</x>
       <y>560</y>
       <width>211</width>
       <height>23</height>
@@ -675,6 +625,80 @@
     <property name="text">
      <string>Restaurer les valeurs par défaut</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="gb_state">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>10</y>
+      <width>381</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>État</string>
+    </property>
+    <widget class="QLabel" name="labelApercu">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>341</width>
+       <height>341</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>490</y>
+      <width>321</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Rotation</string>
+    </property>
+    <widget class="QSlider" name="sliderAngle">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>251</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>180</number>
+     </property>
+     <property name="value">
+      <number>60</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelAngle">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>46</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>60°</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -690,14 +714,53 @@
     <property name="title">
      <string>Fichier</string>
     </property>
+    <addaction name="actionNouveau_projet"/>
+    <addaction name="actionAjouter_des_photos"/>
+    <addaction name="actionCr_er_un_collage"/>
     <addaction name="actionQuitter"/>
    </widget>
+   <widget class="QMenu" name="menuAide">
+    <property name="title">
+     <string>Aide</string>
+    </property>
+    <addaction name="action_propos"/>
+    <addaction name="actionAide_la_cr_ation"/>
+   </widget>
    <addaction name="menuFichier"/>
+   <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuitter">
    <property name="text">
     <string>Quitter</string>
+   </property>
+  </action>
+  <action name="actionNouveau_projet">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nouveau projet</string>
+   </property>
+  </action>
+  <action name="actionAjouter_des_photos">
+   <property name="text">
+    <string>Ajouter des photos</string>
+   </property>
+  </action>
+  <action name="actionCr_er_un_collage">
+   <property name="text">
+    <string>Créer un collage</string>
+   </property>
+  </action>
+  <action name="action_propos">
+   <property name="text">
+    <string>À propos</string>
+   </property>
+  </action>
+  <action name="actionAide_la_cr_ation">
+   <property name="text">
+    <string>Aide à la création</string>
    </property>
   </action>
  </widget>

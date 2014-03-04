@@ -12,7 +12,7 @@ class DialogPolygon : public QDialog
     Q_OBJECT
     
 public:
-    QPolygon *polygon;
+    QPolygon mPolygon;
 
     explicit DialogPolygon(QWidget *parent = 0);
     ~DialogPolygon();
@@ -23,7 +23,7 @@ private slots:
 private:
     Ui::DialogPolygon *ui;
 
-    QPixmap *pixmap;
+    QPixmap *mPixmap;
 
     void drawPolygon();
 
