@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap imageApercu(ui->labelApercu->width(), ui->labelApercu->height());
     ui->labelApercu->setPixmap(imageApercu);
+
+    connect(&mCollage, SIGNAL(valueChanged(int)), ui->progressBarApercu, SLOT(setValue(int)));
 }
 
 MainWindow::~MainWindow()
@@ -225,11 +227,6 @@ void MainWindow::renderApercu()
     QPixmap *imageApercu = mCollage.render(ui->labelApercu->width(), ui->labelApercu->height());
     ui->labelApercu->setPixmap(*imageApercu);
     delete imageApercu;
-}
-
-void MainWindow::paintEvent(QPaintEvent *)
-{
-    connect(&mCollage, SIGNAL(valueChanged(int)), ui->progressBarApercu, SLOT(setValue(int)));
 }
 
 void MainWindow::clearApercu()
