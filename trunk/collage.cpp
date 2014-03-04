@@ -1,344 +1,249 @@
 #include "collage.h"
+#include <QtCore/qmath.h>
 
-Collage::Collage(QPolygon *polygone, QStringList * imgPaths, QSize &taille, int taillePhoto, int nbPhotos, int distancePhotos)
+Collage::Collage()
 {
-    this->polygoneApercu = polygone;
-    this->imgPaths = imgPaths;
-    this->taille = taille;
-    this->taillePhoto = taillePhoto;
-    this->nbPhotos = nbPhotos;
-    this->distancePhotos = distancePhotos;
-    this->polygone = new QPolygon();
+    mPolygon = new QPolygon();
+    mWidth = 0;
+    mHeight = 0;
+    mPhotoSize = 0;
+    mNbPhotos = 0;
+    mDistancePhotos = 0;
+    mDistancePhotosPx = 0;
+    mAngleMax = 0;
+    mAutoSize = true;
+    mAutoPhotoSize = false;
+    mAutoNbPhotos = false;
+    mAutoDistancePhotos = false;
+}
 
-    QList<QPoint> points = polygone->toList();
+Collage::~Collage()
+{
+    delete mPolygon;
+}
 
-    foreach (QPoint p, points)
-    {
-        this->polygone->push_back(getCoordsFromAprecuCoords(p));
+// Fait le rendu du collage dans un QPixmap de largeur renderW et de hauteur renderH.
+// Les paramètres renderW et renderH sont ignorés si mAutoSize est à true car ils seront calculés.
+QPixmap* Collage::render(int renderW, int renderH)
+{
+    QPixmap *rendering = new QPixmap(renderW, renderH);
+    QPainter painter(rendering);
+    QPen pen;
+    qreal scaleX, scaleY, scale;
+    QRect rect;
+    QPoint point;
+    QImage photo;
+    QImage photoR;
+    qreal angle;
+    QMatrix matrix;
+    QList<QImage> listScaledPhotos;
+    int w, h;
+    int i;
+
+    CalculateSize();
+    CalculatePhotoSize();
+    CalculateNbPhotos();
+    CalculateDistancePhotosPx();
+    fitPolygon();
+    CalculateTightScatterPlot();
+
+    scaleX = (qreal)(renderW) / mWidth;
+    scaleY = (qreal)(renderH) / mHeight;
+    (scaleX < scaleY) ? scale = scaleX : scale = scaleY;
+
+    // On centre le rendu du polygone dans le collage.
+    painter.translate(((qreal)(renderW) - scale * mWidth) / 2, ((qreal)(renderH) - scale * mHeight) / 2);
+
+    // On adapte la taille du rendu à la taille de la pixmap cible.
+    painter.scale(scale, scale);
+
+    // On redimensionne les photos.
+    for(int i = 0; i < mListPhotos->count(); i++)
+        listScaledPhotos.append((*mListPhotos)[i].scaled((*mListPhotos)[i].width() * scale, (*mListPhotos)[i].height() * scale));
+
+    painter.setPen(pen);
+    painter.fillRect(QRect(0, 0, mWidth, mHeight), Qt::white);
+
+    valueChanged(0); // On met à jour la barre de progression en lui envoyant un signal.
+
+    for(i = 0; i < mScatterPlot.count(); i++) {
+        point = mScatterPlot[i];
+        photo = listScaledPhotos[i % listScaledPhotos.count()];
+
+        // On effectue une rotation sur la photo d'un angle aléatoire compris entre -mAngleMax et mAngleMax.
+        angle = (qrand() % (2*mAngleMax+1)) - mAngleMax;
+        matrix.translate(photo.width() / 2, photo.height() / 2);
+        matrix.rotate(angle);
+        photoR = photo.transformed(matrix, Qt::SmoothTransformation);
+
+        if(photoR.width() > photoR.height()) {
+            w = mPhotoSize;
+            h = mPhotoSize / ((float)(photoR.width()) / photoR.height());
+        }
+        else {
+            w = mPhotoSize / ((float)(photoR.height()) / photoR.width());
+            h = mPhotoSize;
+        }
+
+        rect.setLeft(point.x() - w / 2);
+        rect.setRight(point.x() +  w / 2);
+        rect.setTop(point.y() - h / 2);
+        rect.setBottom(point.y() + h / 2);
+
+        painter.drawImage(rect, photoR);
+        valueChanged(((float)(i+1) / (mScatterPlot.count())) * 100); // On met à jour la barre de progression en lui envoyant un signal.
     }
+
+    return rendering;
 }
 
-
-void Collage::calculTaille()
+// On adapate la taille du polygone à la taille du collage et on le centre dans le collage.
+void Collage::fitPolygon()
 {
+    qreal photoDiagonal = qSqrt(2*mPhotoSize*mPhotoSize);
+    int fitWidth = mWidth - photoDiagonal;
+    int fitHeight = mHeight - photoDiagonal;
 
+    if(fitWidth < 0)
+        fitWidth = 0;
+
+    if(fitHeight < 0)
+        fitHeight = 0;
+
+    QRect boundingRect = mPolygon->boundingRect();
+    qreal scaleX = (qreal)fitWidth / boundingRect.width();
+    qreal scaleY = (qreal)fitHeight / boundingRect.height();
+    qreal scale;
+    (scaleX < scaleY) ? scale = scaleX : scale = scaleY;
+    scalePolygon(scale, scale);
+    boundingRect = mPolygon->boundingRect();
+    mPolygon->translate(((mWidth - boundingRect.width()) / 2) - boundingRect.left(), ((mHeight - boundingRect.height()) / 2) - boundingRect.top());
 }
 
-void Collage::calculTaillePhoto()
-{
-
-}
-
-void Collage::calculNbPhotos()
-{
-
-}
-
-void Collage::calculDistancePhotos()
-{
-
-}
-
-QPolygon * Collage::getPolygoneApercu()
-{
-    return polygoneApercu;
-}
-
-QPoint Collage::getAprecuCoords(QPoint p)
+// Met à l'échelle le polygone en multipliant les coordonnées (x, y) de chaque point par (sx, sy).
+void Collage::scalePolygon(qreal sx, qreal sy)
 {
     int x, y;
 
-    if (p.x() == 0)
-        x = 0;
-    else
-        x = (int) (p.x() * 400 / taille.width());
-
-    if (p.y() == 0)
-        y = 0;
-    else
-        y = (int) (p.y() * 240 / taille.height());
-
-    return QPoint(x, y);
+    for(int i=0; i<mPolygon->count(); i++) {
+        mPolygon->point(i, &x, &y);
+        mPolygon->setPoint(i, x*sx, y*sy);
+    }
 }
 
-QSize Collage::getAprecuSize(QSize s)
+// Calcule la taille du collage minimum pour faire entrer les photos souhaitées.
+void Collage::CalculateSize()
 {
-    int h, w;
+    if(mAutoSize) {
+        CalculateDistancePhotosPx();
+        int size = (qSqrt(mNbPhotos) - 1) * mDistancePhotosPx + qSqrt(2 * mPhotoSize * mPhotoSize);
 
-    if (s.width() == 0)
-        w = 0;
-    else
-        w = (int) (s.width() * 400 / taille.width());
-
-    if (s.height() == 0)
-        h = 0;
-    else
-        h = (int) (s.height() * 240 / taille.height());
-
-    return QSize(w, h);
+        if(mPolygon->boundingRect().width() > mPolygon->boundingRect().height()) {
+            mWidth = size;
+            mHeight = size * ((float)mPolygon->boundingRect().height() / mPolygon->boundingRect().width());
+        }
+        else {
+            mHeight = size;
+            mWidth = size * ((float)mPolygon->boundingRect().width() / mPolygon->boundingRect().height());
+        }
+    }
 }
 
-QPoint Collage::getCoordsFromAprecuCoords(QPoint p)
+// On calcule la taille des photos en fonction de la taille du collage et du nombre de photos.
+void Collage::CalculatePhotoSize()
+{
+    if(mAutoPhotoSize) {
+        mPhotoSize = qSqrt((mWidth * mHeight) / mNbPhotos);
+    }
+}
+
+// On calcule le nombre de photos que l'on peut faire entrer dans le collage en fonction de la taille du collage et de la distance entre les photos.
+void Collage::CalculateNbPhotos()
+{
+    if(mAutoNbPhotos) {
+        mNbPhotos = (((mWidth - qSqrt(2 * mPhotoSize * mPhotoSize)) / mDistancePhotosPx) + 1) * (((mHeight - qSqrt(2 * mPhotoSize * mPhotoSize)) / mDistancePhotosPx) + 1);
+    }
+}
+
+// Calcule la distance en pixels entre chaque photo nécessaire pour faire entrer le nombre de photos souhaité dans le collage.
+void Collage::CalculateDistancePhotosPx()
+{
+    if(mAutoDistancePhotos) {
+        qreal nbRow; // Nombre de lignes de photos
+        qreal w = mWidth - qSqrt(2 * mPhotoSize * mPhotoSize);
+        qreal h = mHeight - qSqrt(2 * mPhotoSize * mPhotoSize);
+
+        nbRow = qSqrt((h * mNbPhotos) / w);
+        mDistancePhotosPx = h / (nbRow - 1);
+    }
+    else {
+        mDistancePhotosPx = mPhotoSize * mDistancePhotos / 100;
+    }
+}
+
+// Calcule un nuage de points à l'intérieur du polygone dont le nombre de points se rapproche au mieux du nombre de photos souhaité.
+void Collage::CalculateTightScatterPlot()
+{
+    CalculateScatterPlot();
+
+    if(mScatterPlot.count() > mNbPhotos) {
+        while(mScatterPlot.count() > mNbPhotos) // tant qu'il y a plus de points dans le polygone que de photos souhaitées
+        {
+            ChangeScatterPlotDensity(0.9F); // On diminue la densité du nuage de points de 10%
+            CalculateScatterPlot();
+        }
+    }
+    else {
+        while(mScatterPlot.count() < mNbPhotos) // tant qu'il y a moins de points dans le polygone que de photos souhaitées
+        {
+            ChangeScatterPlotDensity(1.1F); // On augmente la densité du nuage de points de 10%
+            CalculateScatterPlot();
+        }
+    }
+}
+
+// Calcule un nuage de points à l'intérieur du polygone.
+void Collage::CalculateScatterPlot()
 {
     int x, y;
+    int top, bottom, left, right;
 
-    if (p.x() == 0)
-        x = 0;
-    else
-        x = (int) (p.x() * taille.width() / 400);
+    mScatterPlot.clear();
 
-    if (p.y() == 0)
-        y = 0;
-    else
-        y = (int) (p.y() * taille.height() / 240);
+    // Si on a réduit la taille du polygone jusqu'à ce qu'il disparaisse cela signifie que mNbPhotos est très faible alors on place juste une photo au centre.
+    if(mPolygon->boundingRect().topLeft() == mPolygon->boundingRect().bottomRight()) {
+        mScatterPlot.push_back(QPoint(mWidth / 2, mHeight / 2));
+    }
+    else {
+        top = mPolygon->boundingRect().top();
+        bottom = mPolygon->boundingRect().bottom();
+        left = mPolygon->boundingRect().left();
+        right = mPolygon->boundingRect().right();
 
-    return QPoint(x, y);
-}
-
-void Collage::sortByWidth(QList<QPixmap> pixmaps)
-{
-    if (pixmaps.size() < 2)
-        return;
-
-    bool changed = false;
-    QPixmap tmp;
-
-    while(!changed)
-    {
-        changed = false;
-
-        for(int j=1; j<pixmaps.size(); j++)
-        {
-            if (pixmaps.at(j-1).width() > pixmaps.at(j).width())
-            {
-                tmp = pixmaps[j];
-                pixmaps[j] = pixmaps[j-1];
-                pixmaps[j-1] = tmp;
-
-                changed = true;
-            }
-        }
+        for(x = left; x <= right; x += mDistancePhotosPx)
+            for(y = top; y <= bottom; y += mDistancePhotosPx)
+                if(mPolygon->containsPoint(QPoint(x, y), Qt::OddEvenFill))
+                    mScatterPlot.push_back(QPoint(x, y));
     }
 }
 
-QList<QPixmap> Collage::getResizedPixmaps()
+// Modifie la densité du nuage de points.
+void Collage::ChangeScatterPlotDensity(float densityMultiplier)
 {
-    QList<QPixmap> images = QList<QPixmap>();
-    QPixmap pixmap;
-    QSize pixmapSize;
-    QList<QString>::iterator path;
-
-    for (path = imgPaths->begin(); path != imgPaths->end(); ++path)
-    {
-        pixmap= QPixmap(*path);
-        pixmapSize = getAprecuSize(pixmap.size());
-        pixmap = pixmap.scaled(QSize(pixmapSize.width(), pixmapSize.height()),  Qt::KeepAspectRatio);
-        images.push_back(pixmap);
+    if(mAutoSize) { // On modifie la densité du nuage de points en modifiant la taille du collage afin d'obtenir Aire(collage) = Aire(collage) * matchRate
+        mWidth *= qSqrt(densityMultiplier);
+        mHeight *= qSqrt(densityMultiplier);
+        fitPolygon(); // On réajuste la taille et la position du polygone.
     }
-
-    return images;
-}
-
-// return a pixmap from pixmaps placed in the polygon at the position [x,y] with the rotation(angle), or null
-/*QPixmap Collage::placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle)
-{
-    QRect * rect;
-
-    for(int i=0; i<pixmaps.size();i++)
-    {
-        rect = new QRect(x,y,pixmaps.at(i).width(),pixmaps.at(i).height());
-
-        if (isRectInPolygon(rect, polygon, angle))
-        {
-            pixmaps.removeAt(i);
-
-            return pixmaps.at(i);
-        }
+    else if(mAutoPhotoSize) { // On modifie la densité du nuage de points en modifiant la taille des photos.
+        mPhotoSize /= qSqrt(densityMultiplier);
+        CalculateDistancePhotosPx(); // La tailles des photos a une influence sur mDistancePhotosPx quand mAutoDistancePhotos est à false;
     }
-
-    return NULL;
-}*/
-
-void Collage::drawApercu(QPainter *painter)
-{
-    painter->drawPolygon(*polygoneApercu);
-
-    if (imgPaths->isEmpty())
-        return;
-
-    QTransform * trans;
-    int angle, i = 0, j = 0, maxHeight;
-    QRect * rect;
-
-    QList<QPixmap> pixmaps = getResizedPixmaps();
-    sortByWidth(pixmaps);
-    QPixmap pixmap = pixmaps.first();
-    pixmap = pixmap.scaled(getAprecuSize(pixmap.size()),  Qt::KeepAspectRatio);
-
-    for (j = 0; j < 240; j += 5)
-    {
-        maxHeight = 0;
-
-        for (i = 0; i < 400; i += 5)
-        {
-            angle = (qrand() % (90 + 1)) - 45; // random angle between -45° and +45°
-
-            rect = new QRect(i,j,pixmap.width(),pixmap.height());
-
-            if (isRectInPolygon(rect, polygoneApercu, angle))
-            {
-                if (pixmap.height() > maxHeight)
-                    maxHeight = pixmap.height();
-
-                trans = new QTransform();
-
-                // Move to the center of the rect
-                trans->translate((i + pixmap.width()/2), (j + pixmap.height()/2));
-
-                // Do the rotation
-                trans->rotate(angle);
-
-                painter->setTransform(*trans);
-
-                painter->drawPixmap(-pixmap.width()/2,-pixmap.height()/2,pixmap.width(),pixmap.height(), pixmap);
-
-                painter->resetTransform();
-
-                // get next qpixmap or exit
-
-                pixmaps.removeFirst();
-
-                if (pixmaps.isEmpty())
-                    return;
-
-                pixmap = pixmaps.first();
-                pixmap = pixmap.scaled(getAprecuSize(pixmap.size()),  Qt::KeepAspectRatio);
-
-                i += pixmap.width() * distancePhotos / 100 - 5;
-            }
-        }
-
-        if (maxHeight > 0)
-            j += pixmap.height() * distancePhotos / 100 - 5;
+    else if(mAutoNbPhotos) { // On modifie la densité du nuage de points en modifiant le nombre de photos.
+        mNbPhotos *= qSqrt(densityMultiplier);
+        //CalculateDistancePhotosPx(); // Le nombre de photos mNbPhotos a une influence sur la distance entre les points quand mAutoDistancePhotos est à true.
     }
-
-    /*while ((j < 240) && (!pixmaps.isEmpty()))
-    {
-        angle = (qrand() % (360 + 1));
-
-        pixmap = &placeImageAt(pixmaps, polygoneApercu, i, j, angle);
-
-        if (pixmap != NULL)
-        {
-            trans = new QTransform();
-
-            // Move to the center of the rect
-            trans->translate((i + pixmap->width()/2), (j + pixmap->height()/2));
-
-            // Do the rotation
-            trans->rotate(angle);
-
-            painter->setTransform(*trans);
-
-            painter->drawPixmap(-pixmap->width()/2,-pixmap->height()/2,pixmap->width(),pixmap->height(), *pixmap);
-
-            painter->resetTransform();
-
-            i += pixmap->width() * distancePhotos / 100;
-
-            if (i >= 400) {
-                i = 0;
-                j += pixmap->height() * distancePhotos / 100;
-            }
-        } else {
-            i += 10;
-            if (i >= 400) {
-                i = 0;
-                j += 10;
-            }
-        }
-    }*/
-}
-
-QPoint Collage::rotatePoint(QPoint center, QPoint point, int angleRotation)
-{
-    float angle = angleRotation * PI / 180.0;
-
-    qreal radius = sqrt(abs(pow((float)(point.x() - center.x()),2) + pow((float)(point.y() - center.y()), 2)));
-
-    return QPoint((int) (center.x() + radius * cos(angle)),
-                  (int) (center.y() + radius * sin(angle)));
-}
-
-bool Collage::isPolygonEquals(QPolygon * polygon1, QPolygon * polygon2)
-{
-    QList<QPoint> pointsP1 = polygon1->toList();
-    QList<QPoint> pointsP2 = polygon2->toList();
-
-    bool isEqual;
-
-    foreach (QPoint p1, pointsP1)
-    {
-        isEqual = false;
-
-        foreach (QPoint p2, pointsP2)
-        {
-            if ((p1.x() == p2.x()) && (p1.y() == p2.y()))
-                isEqual = true;
-        }
-
-        if (!isEqual)
-            return false;
+    else { // Si la taille du collage, la taille des photos et le nombre de photos sont en manuel alors la distance entre 2 photos est forcément en auto.
+        mDistancePhotosPx /= qSqrt(densityMultiplier);
     }
-
-    return true;
 }
-
-bool Collage::isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation)
-{
-    QPolygon * rectPolygon = new QPolygon(4);
-    rectPolygon->setPoint(0, rotatePoint(rect->center(), rect->bottomRight(), (angleRotation+45)%360));
-    rectPolygon->setPoint(1, rotatePoint(rect->center(), rect->bottomLeft(), (angleRotation+135)%360));
-    rectPolygon->setPoint(2, rotatePoint(rect->center(), rect->topLeft(), (angleRotation+225)%360));
-    rectPolygon->setPoint(3, rotatePoint(rect->center(), rect->topRight(), (angleRotation+315)%360));
-
-    QList<QPoint> points = rectPolygon->toList();
-
-    foreach (QPoint p, points)
-    {
-        if (!polygon->containsPoint(p, Qt::OddEvenFill))
-            return false;
-    }
-
-    return isPolygonEquals(&polygon->united(*rectPolygon), polygon);
-}
-
-void Collage::getImage(QString path)
-{
-    QImage img(taille.width(),taille.height(), QImage::Format_ARGB32);
-    img.fill(Qt::white);
-
-    QPainter painter;
-
-    painter.begin(&img);
-
-    painter.rotate(30);
-
-    if (isRectInPolygon(new QRect(100,100,150,150), polygone, 30))
-        painter.drawImage(100,100,QImage(imgPaths->first()).scaled(150,150,Qt::KeepAspectRatio));
-
-    painter.rotate(-30);
-
-    painter.rotate(30);
-
-    if (isRectInPolygon(new QRect(500,500,150,150), polygone, 30))
-        painter.drawImage(500,500,QImage(imgPaths->first()).scaled(150,150,Qt::KeepAspectRatio));
-
-    painter.end();
-
-    img.save(path);
-
-}
-
-
-

@@ -29,8 +29,6 @@ private slots:
 
     void renderApercu();
 
-    void majTaille();
-
     void on_actionQuitter_triggered();
 
     void on_pushButton_clicked();
@@ -42,8 +40,6 @@ private slots:
     void on_pushButtonClearImagesList_clicked();
 
     void on_pushButtonAddFromFolder_clicked();
-
-    void on_pushButton_2_clicked();
 
     void on_pushButtonApercu_clicked();
 
@@ -69,15 +65,29 @@ private slots:
 
     void on_pushButtonCreate_clicked();
 
+    void on_sliderAngle_valueChanged(int value);
+
+    void on_actionNouveau_projet_triggered();
+
+    void on_actionAjouter_des_photos_triggered();
+
+    void on_actionCr_er_un_collage_triggered();
+
 private:
     Ui::MainWindow *ui;
 
-    DialogPolygon *dialogPolygon;
+    DialogPolygon dialogPolygon;
 
-    Collage *collage;
+    Collage mCollage;
 
+    QList<QImage> mListPhotos;
+
+    void paintEvent(QPaintEvent *);
+    void majTaille();
+    void reinitUI();
     void clearApercu();
-
+    void addPhotos();
+    void createCollage();
 };
 
 #endif // MAINWINDOW_H

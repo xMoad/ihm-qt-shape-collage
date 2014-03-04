@@ -3,44 +3,63 @@
 
 #include <QStringList>
 #include <QPainter>
-#include <math.h>
 
-#define PI 3.14159265
-
-class Collage
+class Collage : public QObject
 {
+    Q_OBJECT
+
 public:
-    Collage(QPolygon *polygone, QStringList * imgPaths, QSize &taille, int taillePhoto, int nbPhotos, int distancePhotos);
+    Collage();
+    ~Collage();
+    QPixmap* render(int renderW = 0, int renderH = 0);
 
-    QPolygon* getPolygoneApercu();
+    // getters & setters
+    inline int getWidth() { CalculateSize(); return mWidth; }
+    inline int getHeight() { CalculateSize(); return mHeight; }
+    inline int getPhotoSize() { CalculatePhotoSize(); return mPhotoSize; }
+    inline int getNbPhotos() { CalculateNbPhotos(); return mNbPhotos; }
+    inline int getDistancePoints() { CalculateDistancePhotosPx(); return mDistancePhotosPx; }
+    inline void setPolygon(const QPolygon &polygon) { delete mPolygon; mPolygon = new QPolygon(polygon); }
+    inline void setListPhoto(QList<QImage> *listPhotos) { mListPhotos = listPhotos; }
+    inline void setWidth(int width) { mWidth = width; }
+    inline void setHeight(int height) { mHeight = height; }
+    inline void setPhotoSize(int photoSize) { mPhotoSize = photoSize; }
+    inline void setNbPhotos(int nbPhotos) { mNbPhotos = nbPhotos; }
+    inline void setDistancePhotos(int distancePhotos) { mDistancePhotos = distancePhotos; }
+    inline void setAngleMax(int angleMax) { mAngleMax = angleMax; }
+    inline void setAutoSize(bool autoSize) { mAutoSize = autoSize; }
+    inline void setAutoPhotoSize(bool autoPhotoSize) { mAutoPhotoSize = autoPhotoSize; }
+    inline void setAutoNbPhotos(bool autoNbPhotos) { mAutoNbPhotos = autoNbPhotos; }
+    inline void setAutoDistancePhotos(bool autoDistancePhotos) { mAutoDistancePhotos = autoDistancePhotos; }
 
-    void calculTaille();
-    void calculTaillePhoto();
-    void calculNbPhotos();
-    void calculDistancePhotos();
-
-    void drawApercu(QPainter *painter);
-    void getImage(QString path);
+signals:
+    void valueChanged(int);
 
 private:
-    QPolygon *polygone, *polygoneApercu;
-    QStringList * imgPaths;
-    QSize taille;
-    int taillePhoto;
-    int nbPhotos;
-    int distancePhotos;
+    QPolygon *mPolygon;
+    QList<QPoint> mScatterPlot;
+    QList<QImage> *mListPhotos;
+    int mWidth;
+    int mHeight;
+    int mPhotoSize;
+    int mNbPhotos;
+    int mDistancePhotos;
+    int mDistancePhotosPx;
+    int mAngleMax;
+    bool mAutoSize;
+    bool mAutoPhotoSize;
+    bool mAutoNbPhotos;
+    bool mAutoDistancePhotos;
 
-    QPoint getAprecuCoords(QPoint p);
-    QSize getAprecuSize(QSize s);
-    QPoint getCoordsFromAprecuCoords(QPoint p);
-    //QPixmap placeImageAt(QList<QPixmap> pixmaps, QPolygon * polygon, int x, int y, int angle);
-
-    QList<QPixmap> getResizedPixmaps();
-    void sortByWidth(QList<QPixmap> pixmaps);
-
-    QPoint rotatePoint(QPoint center, QPoint point, int angle);
-    bool isRectInPolygon(QRect * rect, QPolygon * polygon, int angleRotation);
-    bool isPolygonEquals(QPolygon * polygon1, QPolygon * polygon2);
+    void CalculateSize();
+    void CalculatePhotoSize();
+    void CalculateNbPhotos();
+    void CalculateDistancePhotosPx();
+    void CalculateTightScatterPlot();
+    void CalculateScatterPlot();
+    void ChangeScatterPlotDensity(float densityMultiplier);
+    void fitPolygon();
+    void scalePolygon(qreal sx, qreal sy);
 };
 
 #endif // COLLAGE_H

@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QFileDialog>
 #include <QDirIterator>
+#include <QtCore/qmath.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,9 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    dialogPolygon = new DialogPolygon();
-
     ui->radioButtonToutesPhotos->setChecked(true);
+
+    mCollage.setListPhoto(&mListPhotos);
+
+    QPixmap imageApercu(ui->labelApercu->width(), ui->labelApercu->height());
+    ui->labelApercu->setPixmap(imageApercu);
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +46,11 @@ void MainWindow::majNbPhotos()
 
 void MainWindow::on_pushButton_clicked()
 {
+    addPhotos();
+}
+
+void MainWindow::addPhotos()
+{
     QStringList paths = QFileDialog::getOpenFileNames(this, QString(),QString(),tr("Fichiers Images (*.png *.jpg *.bmp *.jpeg)") );
 
     QListWidgetItem * item;
@@ -51,6 +60,8 @@ void MainWindow::on_pushButton_clicked()
         item = new QListWidgetItem(QIcon(path), Tools::getFileNameFromPath(path).left(20));
         item->setData(Qt::UserRole, path);
         ui->listWidgetImages->addItem(item);
+        mListPhotos.append(QImage());
+        mListPhotos[mListPhotos.count() - 1].load(path);
     }
 
     if (ui->listWidgetImages->count() > 0)
@@ -61,6 +72,16 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButtonMoins_clicked()
 {
+    QString path;
+    QImage photo;
+    QList<QListWidgetItem*> selectedItems = ui->listWidgetImages->selectedItems();
+
+    for(int i = 0; i < selectedItems.count(); i++) {
+        path = selectedItems[i]->data(Qt::UserRole).toString();
+        photo.load(path);
+        mListPhotos.removeOne(photo);
+    }
+
     qDeleteAll(ui->listWidgetImages->selectedItems());
 
     if (ui->listWidgetImages->count() == 0)
@@ -92,6 +113,7 @@ void MainWindow::on_pushButtonClearImagesList_clicked()
     {
         ui->listWidgetImages->clear();
         ui->pushButtonClearImagesList->setEnabled(false);
+        mListPhotos.clear();
         majNbPhotos();
     }
 }
@@ -117,6 +139,8 @@ void MainWindow::on_pushButtonAddFromFolder_clicked()
             item = new QListWidgetItem(QIcon(directoryWalker.filePath()), directoryWalker.fileName().left(20));
             item->setData(Qt::UserRole, directoryWalker.filePath());
             ui->listWidgetImages->addItem(item);
+            mListPhotos.append(QImage());
+            mListPhotos[mListPhotos.count() - 1].load(directoryWalker.filePath());
         }
     }
 
@@ -124,11 +148,6 @@ void MainWindow::on_pushButtonAddFromFolder_clicked()
         ui->pushButtonClearImagesList->setEnabled(true);
 
     majNbPhotos();
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    dialogPolygon->show();
 }
 
 void MainWindow::on_pushButtonApercu_clicked()
@@ -140,102 +159,88 @@ void MainWindow::on_pushButtonApercu_clicked()
     }
     else
     {
-        int ret = QMessageBox::critical(this, "Erreur",
+        QMessageBox::critical(this, "Erreur",
                                         "Il n'y a aucune photos chargée.\nVeuillez charger des photos puis ré-essayer.");
     }
 }
 
 void MainWindow::majCollage()
 {
-    QStringList *imgPaths = new QStringList();
+    int nbPhotos;
+    int w = ui->lineEditLargeurCollage->text().toInt(); // TODO : verif > 0
+    int h = ui->lineEditHauteurCollage->text().toInt(); // TODO : verif > 0
 
-    for(int i = 0; i < ui->listWidgetImages->count(); ++i)
-    {
-        imgPaths->push_back(ui->listWidgetImages->item(i)->data(Qt::UserRole).toString());
-    }
+    QPolygon polygon;
 
-    QPolygon *polygone;
+    ui->radioButtonToutesPhotos->isChecked() ? nbPhotos = ui->listWidgetImages->count() : nbPhotos = ui->lineEditNbPhotos->text().toInt();
 
     if (ui->radioButtonPolygone->isChecked())
-        polygone = dialogPolygon->polygon;
+        polygon = dialogPolygon.mPolygon;
     else
     {
-        polygone = new QPolygon();
-
         if (ui->radioButtonRectangle->isChecked())
         {
-            polygone->push_back(QPoint(0,0));
-            polygone->push_back(QPoint(0,240));
-            polygone->push_back(QPoint(400,240));
-            polygone->push_back(QPoint(400,0));
+            polygon.push_back(QPoint(0,0));
+            polygon.push_back(QPoint(0,20));
+            polygon.push_back(QPoint(30, 20));
+            polygon.push_back(QPoint(30,0));
         }
         else
         {
             int nbPoints = 36;
             double slice = 2 * (atan(1.0)*4) /nbPoints;
             double rad, px, py;
-            int rayon = 120;
+            int rayon;
 
+            if(h > w)
+                rayon = w / 2;
+            else
+                rayon = h / 2;
 
             for (int i = 0; i < nbPoints; i++)
             {
                 rad = slice * i;
                 px = 200 + rayon * cos(rad);
                 py = 120 + rayon * sin(rad);
-                polygone->push_back(QPoint(px,py));
+                polygon.push_back(QPoint(px,py));
             }
         }
     }
 
-    int h = ui->lineEditLargeurCollage->text().toInt(); /* TODO : verif > 0 */
-    int w = ui->lineEditHauteurCollage->text().toInt(); /* TODO : verif > 0 */
-
-    QSize * taille = new QSize(h,w); /* TODO : unite */
-
-    int taillePhoto = ui->lineEditTaillePhoto->text().toInt(); /* TODO : verif > 0 + unités ! */
-    int nbPhotos = ui->lineEditNbPhotos->text().toInt();  /* TODO : verif > 0 + radiobox + < à nbphotos */
-    int distancePhotos = ui->spinBoxDistancePhotos->text().toInt(); /* TODO : verif > 0*/
-
-    collage = new Collage(polygone, imgPaths, *taille, taillePhoto, nbPhotos, distancePhotos);
-
-    if (ui->pushButtonAutoManuelTailleCollage->isChecked())
-        collage->calculTaille();
-    else
-        if (ui->pushButtonAutoManuelTaillePhoto->isChecked())
-            collage->calculTaillePhoto();
-        else
-            if (ui->pushButtonAutoManuelNbPhoto->isChecked())
-                collage->calculNbPhotos();
-            else
-                collage->calculDistancePhotos();
+    mCollage.setPolygon(polygon);
+    mCollage.setWidth(w);
+    mCollage.setHeight(h);
+    mCollage.setPhotoSize(ui->lineEditTaillePhoto->text().toInt());
+    mCollage.setDistancePhotos(ui->spinBoxDistancePhotos->value());
+    mCollage.setNbPhotos(nbPhotos);
+    mCollage.setAngleMax(ui->sliderAngle->value());
+    mCollage.setAutoSize(ui->pushButtonAutoManuelTailleCollage->isChecked());
+    mCollage.setAutoPhotoSize(ui->pushButtonAutoManuelTaillePhoto->isChecked());
+    mCollage.setAutoNbPhotos(ui->pushButtonAutoManuelNbPhoto->isChecked());
+    mCollage.setAutoDistancePhotos(ui->pushButtonAutoManuelDistancePhoto->isChecked());
 }
 
 void MainWindow::renderApercu()
 {
-    QPixmap *imageApercu = new QPixmap(ui->labelApercu->width(), ui->labelApercu->height());
-    QPainter painter(imageApercu);
-    QPen pen(Qt::black, 2, Qt::SolidLine);
-    painter.setPen(pen);
-
-    collage->drawApercu(&painter);
-
+    QPixmap *imageApercu = mCollage.render(ui->labelApercu->width(), ui->labelApercu->height());
     ui->labelApercu->setPixmap(*imageApercu);
+    delete imageApercu;
+}
+
+void MainWindow::paintEvent(QPaintEvent *)
+{
+    connect(&mCollage, SIGNAL(valueChanged(int)), ui->progressBarApercu, SLOT(setValue(int)));
 }
 
 void MainWindow::clearApercu()
 {
-    QPixmap *imageApercu = new QPixmap(ui->labelApercu->width(), ui->labelApercu->height());
-    QPainter painter(imageApercu);
-    QPen pen(Qt::white);
-    painter.setPen(pen);
-    painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(ui->labelApercu->rect());
-    ui->labelApercu->setPixmap(*imageApercu);
+    QPixmap imageApercu(ui->labelApercu->width(), ui->labelApercu->height());
+    ui->labelApercu->setPixmap(imageApercu);
 }
 
 void MainWindow::on_radioButtonPolygone_clicked()
 {
-    dialogPolygon->show();
+    dialogPolygon.show();
 }
 
 void MainWindow::majTaille()
@@ -256,7 +261,7 @@ void MainWindow::majTaille()
 
     ui->lineEditHauteurCollage->setEnabled(enabled);
     ui->lineEditLargeurCollage->setEnabled(enabled);
-    ui->comboBoxUniteTailleCollage->setEnabled(enabled);
+    ui->labelPixelsCollage->setEnabled(enabled);
     ui->labelHauteur->setEnabled(enabled);
     ui->labelLargeur->setEnabled(enabled);
     ui->labelX->setEnabled(enabled);
@@ -274,7 +279,7 @@ void MainWindow::majTaille()
     }
 
     ui->lineEditTaillePhoto->setEnabled(enabled);
-    ui->comboBoxUniteTaillePhoto->setEnabled(enabled);
+    ui->labelPixelsPhoto->setEnabled(enabled);
 
     /* màj nombre photos */
     if (ui->pushButtonAutoManuelNbPhoto->isChecked())
@@ -354,6 +359,10 @@ void MainWindow::on_spinBoxDistancePhotos_valueChanged(int arg1)
 
 void MainWindow::on_pushButtonReinitFormeTaille_clicked()
 {
+    reinitUI();
+}
+
+void MainWindow::reinitUI() {
     ui->radioButtonRectangle->setChecked(true);
 
     ui->pushButtonAutoManuelTailleCollage->setChecked(true);
@@ -361,20 +370,27 @@ void MainWindow::on_pushButtonReinitFormeTaille_clicked()
 
     ui->lineEditLargeurCollage->setText("1680");
     ui->lineEditHauteurCollage->setText("1050");
-    ui->comboBoxUniteTailleCollage->setCurrentIndex(0);
 
     ui->lineEditTaillePhoto->setText("200");
-    ui->comboBoxUniteTaillePhoto->setCurrentIndex(0);
 
     ui->radioButtonToutesPhotos->setChecked(true);
     ui->radioButtonNbPhotos->setChecked(false);
     ui->lineEditNbPhotos->setText("150");
 
-    ui->spinBoxDistancePhotos->setValue(90);
-    ui->horizontalSliderDistancePhotos->setValue(90);
+    ui->spinBoxDistancePhotos->setValue(100);
+    ui->horizontalSliderDistancePhotos->setValue(100);
+
+    ui->sliderAngle->setValue(60);
+
+    ui->progressBarApercu->setValue(0);
 }
 
 void MainWindow::on_pushButtonCreate_clicked()
+{
+    createCollage();
+}
+
+void MainWindow::createCollage()
 {
     if (ui->listWidgetImages->count() > 0)
     {
@@ -383,7 +399,11 @@ void MainWindow::on_pushButtonCreate_clicked()
         if (!path.isEmpty())
         {
            majCollage();
-           collage->getImage(path);
+           QFile file(path);
+           file.open(QIODevice::WriteOnly);
+           QPixmap *rendering = mCollage.render(mCollage.getWidth(), mCollage.getHeight());
+           rendering->save(&file, "PNG");
+           delete rendering;
         }
     }
     else
@@ -391,4 +411,37 @@ void MainWindow::on_pushButtonCreate_clicked()
         QMessageBox::critical(this, "Erreur",
                                         "Il n'y a aucune photos chargée.\nVeuillez charger des photos puis ré-essayer.");
     }
+}
+
+void MainWindow::on_sliderAngle_valueChanged(int value)
+{
+    ui->labelAngle->setText(QString::number(value) + "°");
+}
+
+void MainWindow::on_actionNouveau_projet_triggered()
+{
+    int ret = QMessageBox::warning(this, "Effacer",
+                                   "Etes-vous sûr(e) de vouloir tout effacer ?",
+                                    QMessageBox::Yes,
+                                    QMessageBox::No);
+
+    if (ret == QMessageBox::Yes)
+    {
+        ui->listWidgetImages->clear();
+        ui->pushButtonClearImagesList->setEnabled(false);
+        mListPhotos.clear();
+        majNbPhotos();
+        reinitUI();
+        clearApercu();
+    }
+}
+
+void MainWindow::on_actionAjouter_des_photos_triggered()
+{
+    addPhotos();
+}
+
+void MainWindow::on_actionCr_er_un_collage_triggered()
+{
+    createCollage();
 }
