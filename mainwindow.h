@@ -82,7 +82,6 @@ private:
 
     QList<QImage> mListPhotos;
 
-    void paintEvent(QPaintEvent *);
     void majTaille();
     void reinitUI();
     void clearApercu();
