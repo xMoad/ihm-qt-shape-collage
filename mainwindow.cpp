@@ -135,8 +135,8 @@ void MainWindow::on_pushButtonAddFromFolder_clicked()
 
         fileExtension = directoryWalker.fileInfo().completeSuffix();
 
-        if ((fileExtension == "jpg") || (fileExtension == "png") || (fileExtension == "bmp") ||
-                (fileExtension == "jpeg"))
+        if ((fileExtension == "jpg") || (fileExtension == "png") || (fileExtension == "bmp") || (fileExtension == "jpeg")
+         || (fileExtension == "JPG") || (fileExtension == "PNG") || (fileExtension == "BMP") || (fileExtension == "JPEG"))
         {
             item = new QListWidgetItem(QIcon(directoryWalker.filePath()), directoryWalker.fileName().left(20));
             item->setData(Qt::UserRole, directoryWalker.filePath());
