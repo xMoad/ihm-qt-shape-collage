@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QIntValidator>
 #include "math.h"
 
 #include "tools.h";
@@ -75,12 +76,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
     DialogPolygon dialogPolygon;
-
     Collage mCollage;
-
     QList<QImage> mListPhotos;
+    QIntValidator *mUIntValidator;
 
     void majTaille();
     void reinitUI();

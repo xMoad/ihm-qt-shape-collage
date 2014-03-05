@@ -21,11 +21,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->labelApercu->setPixmap(imageApercu);
 
     connect(&mCollage, SIGNAL(valueChanged(int)), ui->progressBarApercu, SLOT(setValue(int)));
+
+    mUIntValidator = new QIntValidator(0, std::numeric_limits<int>::max(), ui->lineEditLargeurCollage->parent());
+    ui->lineEditLargeurCollage->setValidator(mUIntValidator);
+    ui->lineEditHauteurCollage->setValidator(mUIntValidator);
+    ui->lineEditTaillePhoto->setValidator(mUIntValidator);
+    ui->lineEditNbPhotos->setValidator(mUIntValidator);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete mUIntValidator;
 }
 
 void MainWindow::on_actionQuitter_triggered()
