@@ -24,7 +24,7 @@ Collage::~Collage()
 
 // Fait le rendu du collage dans un QPixmap de largeur renderW et de hauteur renderH.
 // Les paramètres renderW et renderH sont ignorés si mAutoSize est à true car ils seront calculés.
-QPixmap* Collage::render(int renderW, int renderH)
+QPixmap* Collage::render(uint renderW, uint renderH)
 {
     QPixmap *rendering = new QPixmap(renderW, renderH);
     QPainter painter(rendering);
@@ -42,18 +42,8 @@ QPixmap* Collage::render(int renderW, int renderH)
 
     valueChanged(0); // On met à jour la barre de progression en lui envoyant un signal.
 
-    CalculateSize();
-    CalculatePhotoSize();
-    CalculateNbPhotos();
-
-    if(mNbPhotos == 0) {
-        valueChanged(100);
+    if(!CalculateParameters())
         return rendering;
-    }
-
-    CalculateDistancePhotosPx();
-    fitPolygon();
-    CalculateTightScatterPlot();
 
     scaleX = (qreal)(renderW) / mWidth;
     scaleY = (qreal)(renderH) / mHeight;
@@ -101,6 +91,26 @@ QPixmap* Collage::render(int renderW, int renderH)
     }
 
     return rendering;
+}
+
+// Calcule les paramètres du collage.
+bool Collage::CalculateParameters()
+{
+    CalculateSize();
+    CalculatePhotoSize();
+    CalculateNbPhotos();
+
+    if(mNbPhotos == 0) {
+        valueChanged(100);
+        return false;
+    }
+    else {
+        CalculateDistancePhotosPx();
+        fitPolygon();
+        CalculateTightScatterPlot();
+    }
+
+    return true;
 }
 
 // On adapate la taille du polygone à la taille du collage et on le centre dans le collage.
@@ -227,7 +237,7 @@ bool Collage::isPolygonValid()
     return (mPolygon->boundingRect().left() != mPolygon->boundingRect().right() && mPolygon->boundingRect().top() != mPolygon->boundingRect().bottom());
 }
 
-// Calcule la taille du collage minimum pour faire entrer les photos souhaitées.
+// Calcule la taille minimum du collage pouvant contenir les photos souhaitées.
 void Collage::CalculateSize()
 {
     if(mAutoSize) {
