@@ -44,22 +44,23 @@ private:
     int mPhotoSize;
     int mNbPhotos;
     int mDistancePhotos;
-    int mDistancePhotosPx;
+    qreal mDistancePhotosPx;
     int mAngleMax;
     bool mAutoSize;
     bool mAutoPhotoSize;
     bool mAutoNbPhotos;
     bool mAutoDistancePhotos;
 
+    void fitPolygon();
+    void scalePolygon(qreal sx, qreal sy);
+    void CalculateTightScatterPlot();
+    void CalculateScatterPlot();
+    void ChangeScatterPlotDensity(float densityMultiplier);
+    bool isPolygonValid();
     void CalculateSize();
     void CalculatePhotoSize();
     void CalculateNbPhotos();
     void CalculateDistancePhotosPx();
-    void CalculateTightScatterPlot();
-    void CalculateScatterPlot();
-    void ChangeScatterPlotDensity(float densityMultiplier);
-    void fitPolygon();
-    void scalePolygon(qreal sx, qreal sy);
 };
 
 #endif // COLLAGE_H
