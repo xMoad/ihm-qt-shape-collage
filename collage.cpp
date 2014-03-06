@@ -42,11 +42,13 @@ QPixmap* Collage::render(uint renderW, uint renderH)
 
     valueChanged(0); // On met à jour la barre de progression en lui envoyant un signal.
 
-    if(!CalculateParameters())
+    if(!CalculateParameters()) {
+        valueChanged(100);
         return rendering;
+    }
 
-    scaleX = (qreal)(renderW) / mWidth;
-    scaleY = (qreal)(renderH) / mHeight;
+    scaleX = renderW / mWidth;
+    scaleY = renderH / mHeight;
     (scaleX < scaleY) ? scale = scaleX : scale = scaleY;
 
     // On centre le rendu du polygone dans le collage.
@@ -101,7 +103,7 @@ bool Collage::CalculateParameters()
     CalculateNbPhotos();
 
     if(mNbPhotos == 0) {
-        valueChanged(100);
+        mScatterPlot.clear();
         return false;
     }
     else {
@@ -150,6 +152,8 @@ void Collage::scalePolygon(qreal sx, qreal sy)
 // Calcule un nuage de points à l'intérieur du polygone dont le nombre de points se rapproche au mieux du nombre de photos souhaité.
 void Collage::CalculateTightScatterPlot()
 {
+    qreal col, row;
+
     mScatterPlot.clear();
 
     // Si le polygone a une aire nulle alors on ne peut pas le redimensionner pour trouver un nuage de points plus précis donc on s'arrete.
@@ -157,18 +161,23 @@ void Collage::CalculateTightScatterPlot()
     {
         CalculateScatterPlot();
 
-        if(mScatterPlot.count() > mNbPhotos) {
-            while(mScatterPlot.count() > mNbPhotos && isPolygonValid()) // tant qu'il y a plus de points dans le polygone que de photos souhaitées
-            {
-                ChangeScatterPlotDensity(0.9F); // On diminue la densité du nuage de points de 10%
-                CalculateScatterPlot();
+        if(!mAutoNbPhotos) // S'il y a une exigence sur le nombre de photos alors on affine le nuage.
+        {
+            if(mScatterPlot.count() > mNbPhotos) {
+                while(mScatterPlot.count() > mNbPhotos && isPolygonValid() // tant qu'il y a plus de points dans le polygone que de photos souhaitées
+                      && (col = mWidth / mDistancePhotosPx) > 1 && (row = mHeight / mDistancePhotosPx) > 1)
+                {
+                    ChangeScatterPlotDensity(((col-1) * (row-1)) / (col * row)); // On diminue la densité de façon à obtenir un nuage de points réduit d'une ligne et d'une colonne.
+                    CalculateScatterPlot();
+                }
             }
-        }
-        else {
-            while(mScatterPlot.count() < mNbPhotos) // tant qu'il y a moins de points dans le polygone que de photos souhaitées
-            {
-                ChangeScatterPlotDensity(1.1F); // On augmente la densité du nuage de points de 10%
-                CalculateScatterPlot();
+            else {
+                while(mScatterPlot.count() < mNbPhotos  // tant qu'il y a moins de points dans le polygone que de photos souhaitées
+                      && (col = mWidth / mDistancePhotosPx) > 1 && (row = mHeight / mDistancePhotosPx) > 1)
+                {
+                    ChangeScatterPlotDensity((col * row) / ((col-1) * (row-1))); // On augmente la densité de façon à obtenir un nuage de points augmenté d'une ligne et d'une colonne.
+                    CalculateScatterPlot();
+                }
             }
         }
     }
@@ -212,7 +221,7 @@ void Collage::CalculateScatterPlot()
 }
 
 // Modifie la densité du nuage de points.
-void Collage::ChangeScatterPlotDensity(float densityMultiplier)
+void Collage::ChangeScatterPlotDensity(qreal densityMultiplier)
 {
     if(mAutoSize) { // On modifie la densité du nuage de points en modifiant la taille du collage afin d'obtenir Aire(collage) = Aire(collage) * matchRate
         mWidth *= qSqrt(densityMultiplier);
@@ -285,11 +294,11 @@ void Collage::CalculateDistancePhotosPx()
         nbRow = qSqrt((h * mNbPhotos) / w);
 
         if(nbRow > 1)
-            mDistancePhotosPx = (qreal)h / (nbRow - 1);
+            mDistancePhotosPx = h / (nbRow - 1);
         else
-            mDistancePhotosPx = (qreal)w / mNbPhotos;
+            mDistancePhotosPx = w / mNbPhotos;
     }
     else {
-        mDistancePhotosPx = (qreal)mPhotoSize * mDistancePhotos / 100;
+        mDistancePhotosPx = mPhotoSize * mDistancePhotos / 100;
     }
 }

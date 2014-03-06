@@ -175,8 +175,8 @@ void MainWindow::on_pushButtonApercu_clicked()
 void MainWindow::majCollage()
 {
     int nbPhotos;
-    int w = ui->lineEditLargeurCollage->text().toInt(); // TODO : verif > 0
-    int h = ui->lineEditHauteurCollage->text().toInt(); // TODO : verif > 0
+    int w = ui->lineEditLargeurCollage->text().toInt();
+    int h = ui->lineEditHauteurCollage->text().toInt();
 
     QPolygon polygon;
 
