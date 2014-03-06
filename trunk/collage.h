@@ -70,11 +70,11 @@ private:
     QPolygon *mPolygon; /*!< Forme du collage*/
     QList<QPoint> mScatterPlot; /*!< Nuage de points pour le placement des photos*/
     QList<QImage> *mListPhotos; /*!< Liste des photos pouvant etre utilisées dans le collage*/
-    int mWidth; /*!< Largeur du collage en pixels*/
-    int mHeight;  /*!< Hauteur du collage en pixels*/
-    int mPhotoSize; /*!< Longueur en pixels du coté du carré englobant une photo*/
-    int mNbPhotos; /*!< Nombre de photos cible pour le collage*/
-    int mDistancePhotos; /*!< Distance en pourcent entre 2 photos*/
+    qreal mWidth; /*!< Largeur du collage en pixels*/
+    qreal mHeight;  /*!< Hauteur du collage en pixels*/
+    qreal mPhotoSize; /*!< Longueur en pixels du coté du carré englobant une photo*/
+    qreal mNbPhotos; /*!< Nombre de photos cible pour le collage*/
+    qreal mDistancePhotos; /*!< Distance en pourcent entre 2 photos*/
     qreal mDistancePhotosPx; /*!< Distance en pixels entre 2 photos*/
     int mAngleMax; /*!< Angle de rotation maximum des photos*/
     bool mAutoSize; /*!< Mode de sélection automatique ou manuel de la taille du collage*/
@@ -117,7 +117,7 @@ private:
      *
      *  \param densityMultiplier : facteur de multiplication de la densié
      */
-    void ChangeScatterPlotDensity(float densityMultiplier);
+    void ChangeScatterPlotDensity(qreal densityMultiplier);
 
     /*!
      *  \brief Détermine si un polygone est valide
