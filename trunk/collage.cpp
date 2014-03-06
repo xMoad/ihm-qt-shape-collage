@@ -221,7 +221,7 @@ void Collage::ChangeScatterPlotDensity(float densityMultiplier)
     }
     else if(mAutoPhotoSize) { // On modifie la densité du nuage de points en modifiant la taille des photos.
         mPhotoSize /= qSqrt(densityMultiplier);
-        CalculateDistancePhotosPx(); // La tailles des photos a une influence sur mDistancePhotosPx quand mAutoDistancePhotos est à false;
+        CalculateDistancePhotosPx(); // La tailles des photos a une influence sur mDistancePhotosPx quand mAutoDistancePhotos est à false.
     }
     else if(mAutoNbPhotos) { // On modifie la densité du nuage de points en modifiant le nombre de photos.
         mNbPhotos *= qSqrt(densityMultiplier);
