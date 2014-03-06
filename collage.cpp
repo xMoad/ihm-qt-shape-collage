@@ -40,9 +40,17 @@ QPixmap* Collage::render(int renderW, int renderH)
     int w, h;
     int i;
 
+    valueChanged(0); // On met à jour la barre de progression en lui envoyant un signal.
+
     CalculateSize();
     CalculatePhotoSize();
     CalculateNbPhotos();
+
+    if(mNbPhotos == 0) {
+        valueChanged(100);
+        return rendering;
+    }
+
     CalculateDistancePhotosPx();
     fitPolygon();
     CalculateTightScatterPlot();
@@ -58,13 +66,11 @@ QPixmap* Collage::render(int renderW, int renderH)
     painter.scale(scale, scale);
 
     // On redimensionne les photos.
-    for(int i = 0; i < mListPhotos->count(); i++)
+    for(i = 0; i < mListPhotos->count(); i++)
         listScaledPhotos.append((*mListPhotos)[i].scaled((*mListPhotos)[i].width() * scale, (*mListPhotos)[i].height() * scale));
 
     painter.setPen(pen);
     painter.fillRect(QRect(0, 0, mWidth, mHeight), Qt::white);
-
-    valueChanged(0); // On met à jour la barre de progression en lui envoyant un signal.
 
     for(i = 0; i < mScatterPlot.count(); i++) {
         point = mScatterPlot[i];
@@ -74,7 +80,7 @@ QPixmap* Collage::render(int renderW, int renderH)
         angle = (qrand() % (2*mAngleMax+1)) - mAngleMax;
         matrix.translate(photo.width() / 2, photo.height() / 2);
         matrix.rotate(angle);
-        photoR = photo.transformed(matrix, Qt::SmoothTransformation);
+        photoR = photo.transformed(matrix, Qt::FastTransformation);
 
         if(photoR.width() > photoR.height()) {
             w = mPhotoSize;
@@ -131,6 +137,96 @@ void Collage::scalePolygon(qreal sx, qreal sy)
     }
 }
 
+// Calcule un nuage de points à l'intérieur du polygone dont le nombre de points se rapproche au mieux du nombre de photos souhaité.
+void Collage::CalculateTightScatterPlot()
+{
+    mScatterPlot.clear();
+
+    // Si le polygone a une aire nulle alors on ne peut pas le redimensionner pour trouver un nuage de points plus précis donc on s'arrete.
+    if(isPolygonValid())
+    {
+        CalculateScatterPlot();
+
+        if(mScatterPlot.count() > mNbPhotos) {
+            while(mScatterPlot.count() > mNbPhotos && isPolygonValid()) // tant qu'il y a plus de points dans le polygone que de photos souhaitées
+            {
+                ChangeScatterPlotDensity(0.9F); // On diminue la densité du nuage de points de 10%
+                CalculateScatterPlot();
+            }
+        }
+        else {
+            while(mScatterPlot.count() < mNbPhotos) // tant qu'il y a moins de points dans le polygone que de photos souhaitées
+            {
+                ChangeScatterPlotDensity(1.1F); // On augmente la densité du nuage de points de 10%
+                CalculateScatterPlot();
+            }
+        }
+    }
+    else // On place juste une photo au centre du collage.
+    {
+        mScatterPlot.push_back(QPoint(mWidth / 2, mHeight / 2));
+    }
+}
+
+// Calcule un nuage de points à l'intérieur du polygone.
+void Collage::CalculateScatterPlot()
+{
+    qreal x, y;
+    int top, bottom, left, right;
+    QPoint point, prevPoint;
+
+    mScatterPlot.clear();
+
+    // Si on a réduit la taille du polygone jusqu'à ce qu'il disparaisse cela signifie que mNbPhotos est très faible alors on place juste une photo au centre.
+    if(!isPolygonValid()) {
+        mScatterPlot.push_back(QPoint(mWidth / 2, mHeight / 2));
+    }
+    else {
+        top = mPolygon->boundingRect().top();
+        bottom = mPolygon->boundingRect().bottom();
+        left = mPolygon->boundingRect().left();
+        right = mPolygon->boundingRect().right();
+
+        for(x = left; x <= right; x += mDistancePhotosPx) {
+            for(y = top; y <= bottom; y += mDistancePhotosPx) {
+                point.setX((int)x);
+                point.setY((int)y);
+
+                if(point != prevPoint && mPolygon->containsPoint(point, Qt::OddEvenFill)) {
+                    mScatterPlot.push_back(point);
+                    prevPoint = point;
+                }
+            }
+        }
+    }
+}
+
+// Modifie la densité du nuage de points.
+void Collage::ChangeScatterPlotDensity(float densityMultiplier)
+{
+    if(mAutoSize) { // On modifie la densité du nuage de points en modifiant la taille du collage afin d'obtenir Aire(collage) = Aire(collage) * matchRate
+        mWidth *= qSqrt(densityMultiplier);
+        mHeight *= qSqrt(densityMultiplier);
+        fitPolygon(); // On réajuste la taille et la position du polygone.
+    }
+    else if(mAutoPhotoSize) { // On modifie la densité du nuage de points en modifiant la taille des photos.
+        mPhotoSize /= qSqrt(densityMultiplier);
+        CalculateDistancePhotosPx(); // La tailles des photos a une influence sur mDistancePhotosPx quand mAutoDistancePhotos est à false;
+    }
+    else if(mAutoNbPhotos) { // On modifie la densité du nuage de points en modifiant le nombre de photos.
+        mNbPhotos *= qSqrt(densityMultiplier);
+    }
+    else { // Si la taille du collage, la taille des photos et le nombre de photos sont en manuel alors la distance entre 2 photos est forcément en auto.
+        mDistancePhotosPx /= qSqrt(densityMultiplier);
+    }
+}
+
+// Retourne vrai si l'aire du polygone est supérieure à 0 et faux dans le cas contraire.
+bool Collage::isPolygonValid()
+{
+    return (mPolygon->boundingRect().left() != mPolygon->boundingRect().right() && mPolygon->boundingRect().top() != mPolygon->boundingRect().bottom());
+}
+
 // Calcule la taille du collage minimum pour faire entrer les photos souhaitées.
 void Collage::CalculateSize()
 {
@@ -152,7 +248,7 @@ void Collage::CalculateSize()
 // On calcule la taille des photos en fonction de la taille du collage et du nombre de photos.
 void Collage::CalculatePhotoSize()
 {
-    if(mAutoPhotoSize) {
+    if(mAutoPhotoSize && mNbPhotos > 0) {
         mPhotoSize = qSqrt((mWidth * mHeight) / mNbPhotos);
     }
 }
@@ -161,6 +257,7 @@ void Collage::CalculatePhotoSize()
 void Collage::CalculateNbPhotos()
 {
     if(mAutoNbPhotos) {
+        CalculateDistancePhotosPx();
         mNbPhotos = (((mWidth - qSqrt(2 * mPhotoSize * mPhotoSize)) / mDistancePhotosPx) + 1) * (((mHeight - qSqrt(2 * mPhotoSize * mPhotoSize)) / mDistancePhotosPx) + 1);
     }
 }
@@ -174,75 +271,13 @@ void Collage::CalculateDistancePhotosPx()
         qreal h = mHeight - qSqrt(2 * mPhotoSize * mPhotoSize);
 
         nbRow = qSqrt((h * mNbPhotos) / w);
-        mDistancePhotosPx = h / (nbRow - 1);
+
+        if(nbRow > 1)
+            mDistancePhotosPx = (qreal)h / (nbRow - 1);
+        else
+            mDistancePhotosPx = (qreal)h / mNbPhotos;
     }
     else {
-        mDistancePhotosPx = mPhotoSize * mDistancePhotos / 100;
-    }
-}
-
-// Calcule un nuage de points à l'intérieur du polygone dont le nombre de points se rapproche au mieux du nombre de photos souhaité.
-void Collage::CalculateTightScatterPlot()
-{
-    CalculateScatterPlot();
-
-    if(mScatterPlot.count() > mNbPhotos) {
-        while(mScatterPlot.count() > mNbPhotos) // tant qu'il y a plus de points dans le polygone que de photos souhaitées
-        {
-            ChangeScatterPlotDensity(0.9F); // On diminue la densité du nuage de points de 10%
-            CalculateScatterPlot();
-        }
-    }
-    else {
-        while(mScatterPlot.count() < mNbPhotos) // tant qu'il y a moins de points dans le polygone que de photos souhaitées
-        {
-            ChangeScatterPlotDensity(1.1F); // On augmente la densité du nuage de points de 10%
-            CalculateScatterPlot();
-        }
-    }
-}
-
-// Calcule un nuage de points à l'intérieur du polygone.
-void Collage::CalculateScatterPlot()
-{
-    int x, y;
-    int top, bottom, left, right;
-
-    mScatterPlot.clear();
-
-    // Si on a réduit la taille du polygone jusqu'à ce qu'il disparaisse cela signifie que mNbPhotos est très faible alors on place juste une photo au centre.
-    if(mPolygon->boundingRect().topLeft() == mPolygon->boundingRect().bottomRight()) {
-        mScatterPlot.push_back(QPoint(mWidth / 2, mHeight / 2));
-    }
-    else {
-        top = mPolygon->boundingRect().top();
-        bottom = mPolygon->boundingRect().bottom();
-        left = mPolygon->boundingRect().left();
-        right = mPolygon->boundingRect().right();
-
-        for(x = left; x <= right; x += mDistancePhotosPx)
-            for(y = top; y <= bottom; y += mDistancePhotosPx)
-                if(mPolygon->containsPoint(QPoint(x, y), Qt::OddEvenFill))
-                    mScatterPlot.push_back(QPoint(x, y));
-    }
-}
-
-// Modifie la densité du nuage de points.
-void Collage::ChangeScatterPlotDensity(float densityMultiplier)
-{
-    if(mAutoSize) { // On modifie la densité du nuage de points en modifiant la taille du collage afin d'obtenir Aire(collage) = Aire(collage) * matchRate
-        mWidth *= qSqrt(densityMultiplier);
-        mHeight *= qSqrt(densityMultiplier);
-        fitPolygon(); // On réajuste la taille et la position du polygone.
-    }
-    else if(mAutoPhotoSize) { // On modifie la densité du nuage de points en modifiant la taille des photos.
-        mPhotoSize /= qSqrt(densityMultiplier);
-        CalculateDistancePhotosPx(); // La tailles des photos a une influence sur mDistancePhotosPx quand mAutoDistancePhotos est à false;
-    }
-    else if(mAutoNbPhotos) { // On modifie la densité du nuage de points en modifiant le nombre de photos.
-        mNbPhotos *= qSqrt(densityMultiplier);
-    }
-    else { // Si la taille du collage, la taille des photos et le nombre de photos sont en manuel alors la distance entre 2 photos est forcément en auto.
-        mDistancePhotosPx /= qSqrt(densityMultiplier);
+        mDistancePhotosPx = (qreal)mPhotoSize * mDistancePhotos / 100;
     }
 }
