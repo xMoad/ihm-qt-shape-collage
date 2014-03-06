@@ -285,7 +285,7 @@ void Collage::CalculateDistancePhotosPx()
         if(nbRow > 1)
             mDistancePhotosPx = (qreal)h / (nbRow - 1);
         else
-            mDistancePhotosPx = (qreal)h / mNbPhotos;
+            mDistancePhotosPx = (qreal)w / mNbPhotos;
     }
     else {
         mDistancePhotosPx = (qreal)mPhotoSize * mDistancePhotos / 100;
