@@ -261,7 +261,7 @@ void Collage::CalculateSize()
 void Collage::CalculatePhotoSize()
 {
     if(mAutoPhotoSize && mNbPhotos > 0) {
-        mPhotoSize = qSqrt((mWidth * mHeight) / mNbPhotos);
+        mPhotoSize = qSqrt((mWidth * mHeight) / (mNbPhotos * mDistancePhotos / 100));
     }
 }
 
