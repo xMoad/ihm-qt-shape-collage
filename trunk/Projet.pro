@@ -19,7 +19,12 @@ SOURCES += main.cpp\
     collage.cpp \
     photos.cpp \
     photoswizardpage.cpp \
-    wizard.cpp
+    wizard.cpp \
+    shape.cpp \
+    shapewizardpage.cpp \
+    sizes.cpp \
+    rotationmax.cpp \
+    sizeswizardpage.cpp
 
 HEADERS  += mainwindow.h \
     tools.h \
@@ -27,10 +32,20 @@ HEADERS  += mainwindow.h \
     dialogpolygon.h \
     photos.h \
     photoswizardpage.h \
-    wizard.h
+    wizard.h \
+    shape.h \
+    shapewizardpage.h \
+    sizes.h \
+    rotationmax.h \
+    sizeswizardpage.h
 
 FORMS    += mainwindow.ui \
     dialogpolygon.ui \
     photos.ui \
     photoswizardpage.ui \
-    wizard.ui
+    wizard.ui \
+    shape.ui \
+    shapewizardpage.ui \
+    sizes.ui \
+    rotationmax.ui \
+    sizeswizardpage.ui

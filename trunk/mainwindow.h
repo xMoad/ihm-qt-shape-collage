@@ -3,11 +3,9 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QIntValidator>
 #include "math.h"
 
 #include "tools.h"
-#include "dialogpolygon.h"
 #include "collage.h"
 #include "photos.h"
 #include "wizard.h"
@@ -34,29 +32,9 @@ private slots:
 
     void on_pushButtonApercu_clicked();
 
-    void on_radioButtonPolygone_clicked();
-
-    void on_pushButtonAutoManuelTailleCollage_clicked();
-
-    void on_pushButtonAutoManuelTaillePhoto_clicked();
-
-    void on_pushButtonAutoManuelNbPhoto_clicked();
-
-    void on_pushButtonAutoManuelDistancePhoto_clicked();
-
-    void on_radioButtonToutesPhotos_clicked();
-
-    void on_radioButtonNbPhotos_clicked();
-
-    void on_horizontalSliderDistancePhotos_valueChanged(int value);
-
-    void on_spinBoxDistancePhotos_valueChanged(int arg1);
-
     void on_pushButtonReinitFormeTaille_clicked();
 
     void on_pushButtonCreate_clicked();
-
-    void on_sliderAngle_valueChanged(int value);
 
     void on_actionNouveau_projet_triggered();
 
@@ -70,12 +48,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    DialogPolygon dialogPolygon;
     Collage mCollage;
-    QIntValidator *mUIntValidator;    
     Wizard wizard;
 
-    void majTaille();
     void reinitUI();
     void clearApercu();
     void createCollage();
