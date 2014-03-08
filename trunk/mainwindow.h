@@ -6,9 +6,11 @@
 #include <QIntValidator>
 #include "math.h"
 
-#include "tools.h";
+#include "tools.h"
 #include "dialogpolygon.h"
 #include "collage.h"
+#include "photos.h"
+#include "wizard.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,23 +26,11 @@ public:
     
 private slots:
 
-    void majNbPhotos();
-
     void majCollage();
 
     void renderApercu();
 
     void on_actionQuitter_triggered();
-
-    void on_pushButton_clicked();
-
-    void on_pushButtonMoins_clicked();
-
-    void on_listWidgetImages_itemSelectionChanged();
-
-    void on_pushButtonClearImagesList_clicked();
-
-    void on_pushButtonAddFromFolder_clicked();
 
     void on_pushButtonApercu_clicked();
 
@@ -74,17 +64,20 @@ private slots:
 
     void on_actionCr_er_un_collage_triggered();
 
+    void on_action_propos_triggered();
+
+    void on_actionAide_la_cr_ation_triggered();
+
 private:
     Ui::MainWindow *ui;
     DialogPolygon dialogPolygon;
     Collage mCollage;
-    QList<QImage> mListPhotos;
-    QIntValidator *mUIntValidator;
+    QIntValidator *mUIntValidator;    
+    Wizard wizard;
 
     void majTaille();
     void reinitUI();
     void clearApercu();
-    void addPhotos();
     void createCollage();
 };
 

@@ -3,9 +3,10 @@
 
 #include <QPainter.h>
 #include <QMouseEvent>
+#include <QtCore/qmath.h>
+#include <QLayout>
 #include <QFileDialog>
 #include <QDirIterator>
-#include <QtCore/qmath.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->radioButtonToutesPhotos->setChecked(true);
 
-    mCollage.setListPhoto(&mListPhotos);
+    mCollage.setListPhoto(ui->widgetPhotos->getListPhotos());
 
     QPixmap imageApercu(ui->labelApercu->width(), ui->labelApercu->height());
     ui->labelApercu->setPixmap(imageApercu);
@@ -40,127 +41,9 @@ void MainWindow::on_actionQuitter_triggered()
     this->close();
 }
 
-void MainWindow::majNbPhotos()
-{
-    int nbImages = ui->listWidgetImages->count();
-
-    if (nbImages == 0)
-        ui->labelNbPhotos->setText("Aucune photo");
-    else
-        if (nbImages == 1)
-            ui->labelNbPhotos->setText("1 photo");
-        else
-            ui->labelNbPhotos->setText(QString::number(nbImages) + " photos");
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    addPhotos();
-}
-
-void MainWindow::addPhotos()
-{
-    QStringList paths = QFileDialog::getOpenFileNames(this, QString(),QString(),tr("Fichiers Images (*.png *.jpg *.bmp *.jpeg)") );
-
-    QListWidgetItem * item;
-
-    foreach (QString path, paths)
-    {
-        item = new QListWidgetItem(QIcon(path), Tools::getFileNameFromPath(path).left(20));
-        item->setData(Qt::UserRole, path);
-        ui->listWidgetImages->addItem(item);
-        mListPhotos.append(QImage());
-        mListPhotos[mListPhotos.count() - 1].load(path);
-    }
-
-    if (ui->listWidgetImages->count() > 0)
-        ui->pushButtonClearImagesList->setEnabled(true);
-
-    majNbPhotos();
-}
-
-void MainWindow::on_pushButtonMoins_clicked()
-{
-    QString path;
-    QImage photo;
-    QList<QListWidgetItem*> selectedItems = ui->listWidgetImages->selectedItems();
-
-    for(int i = 0; i < selectedItems.count(); i++) {
-        path = selectedItems[i]->data(Qt::UserRole).toString();
-        photo.load(path);
-        mListPhotos.removeOne(photo);
-    }
-
-    qDeleteAll(ui->listWidgetImages->selectedItems());
-
-    if (ui->listWidgetImages->count() == 0)
-        ui->pushButtonClearImagesList->setEnabled(false);
-
-    majNbPhotos();
-}
-
-void MainWindow::on_listWidgetImages_itemSelectionChanged()
-{
-    if (ui->listWidgetImages->selectedItems().count() > 0)
-    {
-        ui->pushButtonMoins->setEnabled(true);
-    }
-    else
-    {
-        ui->pushButtonMoins->setEnabled(false);
-    }
-}
-
-void MainWindow::on_pushButtonClearImagesList_clicked()
-{
-    int ret = QMessageBox::warning(this, "Effacer",
-                                   "Etes-vous sûr(e) de vouloir tout effacer ?",
-                                    QMessageBox::Yes,
-                                    QMessageBox::No);
-
-    if (ret == QMessageBox::Yes)
-    {
-        ui->listWidgetImages->clear();
-        ui->pushButtonClearImagesList->setEnabled(false);
-        mListPhotos.clear();
-        majNbPhotos();
-    }
-}
-
-void MainWindow::on_pushButtonAddFromFolder_clicked()
-{
-    QString directoryPath = QFileDialog::getExistingDirectory(this);
-
-    QDirIterator directoryWalker(directoryPath, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
-
-    QListWidgetItem * item;
-    QString fileExtension;
-
-    while(directoryWalker.hasNext())
-    {
-        directoryWalker.next();
-
-        fileExtension = (directoryWalker.fileInfo().completeSuffix()).toLower();
-
-        if ((fileExtension == "jpg") || (fileExtension == "png") || (fileExtension == "bmp") || (fileExtension == "jpeg"))
-        {
-            item = new QListWidgetItem(QIcon(directoryWalker.filePath()), directoryWalker.fileName().left(20));
-            item->setData(Qt::UserRole, directoryWalker.filePath());
-            ui->listWidgetImages->addItem(item);
-            mListPhotos.append(QImage());
-            mListPhotos[mListPhotos.count() - 1].load(directoryWalker.filePath());
-        }
-    }
-
-    if (ui->listWidgetImages->count() > 0)
-        ui->pushButtonClearImagesList->setEnabled(true);
-
-    majNbPhotos();
-}
-
 void MainWindow::on_pushButtonApercu_clicked()
 {
-    if (ui->listWidgetImages->count() > 0)
+    if (ui->widgetPhotos->countListPhotos() > 0)
     {
         majCollage();
         renderApercu();
@@ -180,7 +63,7 @@ void MainWindow::majCollage()
 
     QPolygon polygon;
 
-    ui->radioButtonToutesPhotos->isChecked() ? nbPhotos = ui->listWidgetImages->count() : nbPhotos = ui->lineEditNbPhotos->text().toInt();
+    ui->radioButtonToutesPhotos->isChecked() ? nbPhotos = ui->widgetPhotos->countListPhotos() : nbPhotos = ui->lineEditNbPhotos->text().toInt();
 
     if (ui->radioButtonPolygone->isChecked())
         polygon = dialogPolygon.mPolygon;
@@ -395,7 +278,7 @@ void MainWindow::on_pushButtonCreate_clicked()
 
 void MainWindow::createCollage()
 {
-    if (ui->listWidgetImages->count() > 0)
+    if (ui->widgetPhotos->countListPhotos() > 0)
     {
         QString path = QFileDialog::getSaveFileName(this, tr("Save as image"), "", tr("PNG file (*.png)"));
 
@@ -430,10 +313,7 @@ void MainWindow::on_actionNouveau_projet_triggered()
 
     if (ret == QMessageBox::Yes)
     {
-        ui->listWidgetImages->clear();
-        ui->pushButtonClearImagesList->setEnabled(false);
-        mListPhotos.clear();
-        majNbPhotos();
+        ui->widgetPhotos->clearListPhotos();
         reinitUI();
         clearApercu();
     }
@@ -441,10 +321,20 @@ void MainWindow::on_actionNouveau_projet_triggered()
 
 void MainWindow::on_actionAjouter_des_photos_triggered()
 {
-    addPhotos();
+    ui->widgetPhotos->addPhotos();
 }
 
 void MainWindow::on_actionCr_er_un_collage_triggered()
 {
     createCollage();
+}
+
+void MainWindow::on_action_propos_triggered()
+{
+
+}
+
+void MainWindow::on_actionAide_la_cr_ation_triggered()
+{
+    wizard.show();
 }
