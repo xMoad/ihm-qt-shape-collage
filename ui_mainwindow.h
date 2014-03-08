@@ -17,7 +17,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -28,6 +27,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
+#include <photos.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -41,13 +41,6 @@ public:
     QAction *action_propos;
     QAction *actionAide_la_cr_ation;
     QWidget *centralWidget;
-    QGroupBox *groupBox;
-    QPushButton *pushButton;
-    QListWidget *listWidgetImages;
-    QPushButton *pushButtonMoins;
-    QPushButton *pushButtonClearImagesList;
-    QLabel *labelNbPhotos;
-    QPushButton *pushButtonAddFromFolder;
     QGroupBox *groupBox_2;
     QRadioButton *radioButtonRectangle;
     QRadioButton *radioButtonCercle;
@@ -85,6 +78,7 @@ public:
     QGroupBox *groupBox_4;
     QSlider *sliderAngle;
     QLabel *labelAngle;
+    Photos *widgetPhotos;
     QMenuBar *menuBar;
     QMenu *menuFichier;
     QMenu *menuAide;
@@ -110,38 +104,6 @@ public:
         actionAide_la_cr_ation->setObjectName(QStringLiteral("actionAide_la_cr_ation"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        groupBox = new QGroupBox(centralWidget);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setGeometry(QRect(10, 10, 311, 551));
-        pushButton = new QPushButton(groupBox);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(20, 490, 31, 23));
-        listWidgetImages = new QListWidget(groupBox);
-        listWidgetImages->setObjectName(QStringLiteral("listWidgetImages"));
-        listWidgetImages->setGeometry(QRect(15, 20, 281, 461));
-        listWidgetImages->setDragEnabled(false);
-        listWidgetImages->setSelectionMode(QAbstractItemView::MultiSelection);
-        listWidgetImages->setIconSize(QSize(120, 120));
-        listWidgetImages->setResizeMode(QListView::Fixed);
-        listWidgetImages->setViewMode(QListView::IconMode);
-        listWidgetImages->setModelColumn(0);
-        listWidgetImages->setBatchSize(100);
-        listWidgetImages->setWordWrap(true);
-        pushButtonMoins = new QPushButton(groupBox);
-        pushButtonMoins->setObjectName(QStringLiteral("pushButtonMoins"));
-        pushButtonMoins->setEnabled(false);
-        pushButtonMoins->setGeometry(QRect(50, 490, 31, 23));
-        pushButtonClearImagesList = new QPushButton(groupBox);
-        pushButtonClearImagesList->setObjectName(QStringLiteral("pushButtonClearImagesList"));
-        pushButtonClearImagesList->setEnabled(false);
-        pushButtonClearImagesList->setGeometry(QRect(100, 490, 91, 23));
-        labelNbPhotos = new QLabel(groupBox);
-        labelNbPhotos->setObjectName(QStringLiteral("labelNbPhotos"));
-        labelNbPhotos->setGeometry(QRect(220, 490, 71, 21));
-        labelNbPhotos->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        pushButtonAddFromFolder = new QPushButton(groupBox);
-        pushButtonAddFromFolder->setObjectName(QStringLiteral("pushButtonAddFromFolder"));
-        pushButtonAddFromFolder->setGeometry(QRect(20, 520, 131, 23));
         groupBox_2 = new QGroupBox(centralWidget);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(740, 10, 321, 121));
@@ -284,6 +246,9 @@ public:
         labelAngle = new QLabel(groupBox_4);
         labelAngle->setObjectName(QStringLiteral("labelAngle"));
         labelAngle->setGeometry(QRect(270, 20, 46, 13));
+        widgetPhotos = new Photos(centralWidget);
+        widgetPhotos->setObjectName(QStringLiteral("widgetPhotos"));
+        widgetPhotos->setGeometry(QRect(0, 0, 332, 577));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -320,12 +285,6 @@ public:
         actionCr_er_un_collage->setText(QApplication::translate("MainWindow", "Cr\303\251er un collage", 0));
         action_propos->setText(QApplication::translate("MainWindow", "\303\200 propos", 0));
         actionAide_la_cr_ation->setText(QApplication::translate("MainWindow", "Aide \303\240 la cr\303\251ation", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "Photos", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "+", 0));
-        pushButtonMoins->setText(QApplication::translate("MainWindow", "-", 0));
-        pushButtonClearImagesList->setText(QApplication::translate("MainWindow", "Effacer la liste", 0));
-        labelNbPhotos->setText(QApplication::translate("MainWindow", "Aucune photo", 0));
-        pushButtonAddFromFolder->setText(QApplication::translate("MainWindow", "Ajouter depuis un dossier", 0));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Forme", 0));
         radioButtonRectangle->setText(QApplication::translate("MainWindow", "Rectangle", 0));
         radioButtonCercle->setText(QApplication::translate("MainWindow", "Cercle", 0));

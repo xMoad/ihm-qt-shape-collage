@@ -16,12 +16,21 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     tools.cpp \
     dialogpolygon.cpp \
-    collage.cpp
+    collage.cpp \
+    photos.cpp \
+    photoswizardpage.cpp \
+    wizard.cpp
 
 HEADERS  += mainwindow.h \
     tools.h \
     collage.h \
-    dialogpolygon.h
+    dialogpolygon.h \
+    photos.h \
+    photoswizardpage.h \
+    wizard.h
 
 FORMS    += mainwindow.ui \
-    dialogpolygon.ui
+    dialogpolygon.ui \
+    photos.ui \
+    photoswizardpage.ui \
+    wizard.ui
