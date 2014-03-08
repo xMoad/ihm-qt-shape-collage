@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Wizard</string>
+  </property>
+  <widget class="PhotosWizardPage" name="photosWizardPage"/>
+  <widget class="ShapeWizardPage" name="shapeWizardPage"/>
+  <widget class="SizesWizardPage" name="sizesWizardPage"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PhotosWizardPage</class>
+   <extends>QWizardPage</extends>
+   <header location="global">photoswizardpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShapeWizardPage</class>
+   <extends>QWizardPage</extends>
+   <header location="global">shapewizardpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SizesWizardPage</class>
+   <extends>QWizardPage</extends>
+   <header location="global">sizeswizardpage.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
