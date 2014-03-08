@@ -14,61 +14,6 @@
    <string>Shape Copiage</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>10</y>
-      <width>321</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Forme</string>
-    </property>
-    <widget class="QRadioButton" name="radioButtonRectangle">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>30</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Rectangle</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonCercle">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>60</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Cercle</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonPolygone">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>90</y>
-       <width>82</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Polygone</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QPushButton" name="pushButtonApercu">
     <property name="geometry">
      <rect>
@@ -94,387 +39,6 @@
     <property name="text">
      <string>Créer</string>
     </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>140</y>
-      <width>321</width>
-      <height>341</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Taille</string>
-    </property>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Taille du collage :</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonAutoManuelTailleCollage">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>60</y>
-       <width>51</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Auto</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonAutoManuelTaillePhoto">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>140</y>
-       <width>51</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Manuel</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonAutoManuelNbPhoto">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>210</y>
-       <width>51</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Manuel</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonAutoManuelDistancePhoto">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>290</y>
-       <width>51</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Manuel</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>110</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Taille de la photo :</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditLargeurCollage">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>60</y>
-       <width>51</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1680</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelLargeur">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>40</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Largeur</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelX">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>60</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>x</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditHauteurCollage">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>60</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1050</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelHauteur">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>40</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Hauteur</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditTaillePhoto">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>140</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>200</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Nombres de photos :</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditNbPhotos">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>240</y>
-       <width>31</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>150</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelPhotos">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>240</y>
-       <width>46</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>photos</string>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonToutesPhotos">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>210</y>
-       <width>51</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Tout</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QRadioButton" name="radioButtonNbPhotos">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>240</y>
-       <width>16</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>260</y>
-       <width>141</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Distance entre les photos :</string>
-     </property>
-    </widget>
-    <widget class="QSlider" name="horizontalSliderDistancePhotos">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>290</y>
-       <width>121</width>
-       <height>19</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>25</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>90</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBoxDistancePhotos">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>290</y>
-       <width>42</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>25</number>
-     </property>
-     <property name="maximum">
-      <number>200</number>
-     </property>
-     <property name="value">
-      <number>100</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelPourcent">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>290</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>%</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelPixelsPhoto">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>140</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>pixels</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelPixelsCollage">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>60</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>pixels</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QProgressBar" name="progressBarApercu">
     <property name="geometry">
@@ -531,51 +95,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_4">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>490</y>
-      <width>321</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Rotation</string>
-    </property>
-    <widget class="QSlider" name="sliderAngle">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>251</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <number>180</number>
-     </property>
-     <property name="value">
-      <number>60</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="labelAngle">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>20</y>
-       <width>46</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>60°</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="Photos" name="widgetPhotos" native="true">
     <property name="geometry">
      <rect>
@@ -583,6 +102,36 @@
       <y>0</y>
       <width>332</width>
       <height>577</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="Shape" name="widgetShape" native="true">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>10</y>
+      <width>326</width>
+      <height>128</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="Sizes" name="widgetSizes" native="true">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>140</y>
+      <width>327</width>
+      <height>345</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="RotationMax" name="widgetRotationMax" native="true">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>490</y>
+      <width>325</width>
+      <height>57</height>
      </rect>
     </property>
    </widget>
@@ -656,6 +205,24 @@
    <class>Photos</class>
    <extends>QWidget</extends>
    <header location="global">photos.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Shape</class>
+   <extends>QWidget</extends>
+   <header location="global">shape.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Sizes</class>
+   <extends>QWidget</extends>
+   <header location="global">sizes.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RotationMax</class>
+   <extends>QWidget</extends>
+   <header location="global">rotationmax.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
