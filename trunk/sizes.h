@@ -1,6 +1,12 @@
 #ifndef SIZES_H
 #define SIZES_H
 
+/*!
+ * \file sizes.h
+ * \brief Widget permettant la gestion des tailles
+ * \author Julien JUNG & Thomas WINCKELL
+ * \version 1.0
+ */
 #include <QWidget>
 #include <QIntValidator>
 
@@ -8,6 +14,9 @@ namespace Ui {
 class Sizes;
 }
 
+/*! \class Sizes
+* \brief Classe représentant un widget permettant la gestion des tailles
+*/
 class Sizes : public QWidget
 {
     Q_OBJECT
@@ -16,6 +25,7 @@ public:
     explicit Sizes(QWidget *parent = 0);
     ~Sizes();
 
+    // getters
     int getCollageWidth();
     int getCollageHeight();
     int getNbPhotos(int maxPhotos);
@@ -26,6 +36,9 @@ public:
     bool getAutoNbPhotos();
     bool getAutoDistancePhotos();
 
+    /*!
+    *  \brief Ré-initialise l'interface
+    */
     void reinitUI();
 
 private slots:
@@ -41,8 +54,11 @@ private slots:
     
 private:
     Ui::Sizes *ui;
-    QIntValidator *mUIntValidator;
+    QIntValidator *mUIntValidator; /*!< Validateur pour entier non signé*/
 
+    /*!
+    *  \brief Met à jour l'interface en fonction des choix auto/manuel de l'utilisateur
+    */
     void majTaille();
 };
 

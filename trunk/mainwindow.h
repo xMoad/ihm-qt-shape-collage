@@ -1,6 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/*!
+ * \file mainwindow.h
+ * \brief Fenêtre principale
+ * \author Julien JUNG & Thomas WINCKELL
+ * \version 1.0
+ */
 #include <QMainWindow>
 #include <QMessageBox>
 #include "math.h"
@@ -15,6 +21,9 @@ namespace Ui {
 class MainWindow;
 }
 
+/*! \class MainWindow
+* \brief Classe représentant la fenêtre principale
+*/
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,8 +34,14 @@ public:
     
 private slots:
 
+    /*!
+    *  \brief Met à jour le collage de photos
+    */
     void majCollage();
 
+    /*!
+    *  \brief Affiche l'aperçu du collage de photos
+    */
     void renderApercu();
 
     void on_actionQuitter_triggered();
@@ -49,12 +64,23 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Collage mCollage;
-    Wizard wizard;
-    DialogAbout dialogAbout;
+    Collage mCollage; /*!< Collage de photos*/
+    Wizard wizard; /*!< Assistant de création*/
+    DialogAbout dialogAbout; /*!< Boîte de dialogue "A propos"*/
 
+    /*!
+    *  \brief Ré-initialise l'interface
+    */
     void reinitUI();
+
+    /*!
+    *  \brief Ré-initialise l'aperçu
+    */
     void clearApercu();
+
+    /*!
+    *  \brief Créé le collage de photos
+    */
     void createCollage();
 };
 
