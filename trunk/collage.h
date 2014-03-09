@@ -131,21 +131,25 @@ private:
 
     /*!
      *  \brief Calcule la taille minimum du collage pouvant contenir les photos souhaitées.
+     *  La fonction ne fait rien si la taille du collage est en mode manuel (mAutoSize = false).
      */
     void CalculateSize();
 
     /*!
      *  \brief Calcule la taille des photos en fonction de la taille du collage et du nombre de photos.
+     *  La fonction ne fait rien si la taille des photos est en mode manuel (mAutoPhotoSize = false).
      */
     void CalculatePhotoSize();
 
     /*!
      *  \brief Calcule le nombre de photos que l'on peut faire entrer dans le collage en fonction de la taille du collage et de la distance entre les photos.
+     *  La fonction ne fait rien si le nombre de photos est en mode manuel (mAutoNbPhotos = false).
      */
     void CalculateNbPhotos();
 
     /*!
-     *  \brief Calcule la distance en pixels entre chaque photo nécessaire pour faire entrer le nombre de photos souhaité dans le collage.
+     *  \brief Si la distance entre les photos est en mode auto (mAutoDistancePhotos = true) alors calcule la distance en pixels entre chaque photo nécessaire pour faire entrer le nombre de photos souhaité dans le collage.
+     *  Si la distance entre les photos est en mode manuel (mAutoDistancePhotos = false) alors mDistancePhotosPx = mPhotoSize * mDistancePhotos / 100
      */
     void CalculateDistancePhotosPx();
 };
