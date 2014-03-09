@@ -41,7 +41,7 @@ void Wizard::accept()
     mCollage.setAutoSize(ui->sizesWizardPage->getWidgetSizes()->getAutoSize());
     mCollage.setAutoPhotoSize(ui->sizesWizardPage->getWidgetSizes()->getAutoPhotoSize());
     mCollage.setAutoNbPhotos(ui->sizesWizardPage->getWidgetSizes()->getAutoNbPhotos());
-    mCollage.setAutoDistancePhotos(ui->sizesWizardPage->getWidgetSizes()->getDistancePhotos());
+    mCollage.setAutoDistancePhotos(ui->sizesWizardPage->getWidgetSizes()->getAutoDistancePhotos());
 
     QFile file(field("imagePath").toString());
     file.open(QIODevice::WriteOnly);
