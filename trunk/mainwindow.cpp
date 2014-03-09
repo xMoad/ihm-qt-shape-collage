@@ -148,11 +148,11 @@ void MainWindow::on_actionCr_er_un_collage_triggered()
 
 void MainWindow::on_action_propos_triggered()
 {
-
+    dialogAbout.show();
 }
 
 void MainWindow::on_actionAide_la_cr_ation_triggered()
-{    
+{
     wizard.reinitUI();
     wizard.restart();
     wizard.show();

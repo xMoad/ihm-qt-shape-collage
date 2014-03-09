@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QWidget>
 #include <shape.h>
 
@@ -23,6 +24,7 @@ class Ui_ShapeWizardPage
 {
 public:
     Shape *widgetShape;
+    QLabel *label;
 
     void setupUi(QWidget *ShapeWizardPage)
     {
@@ -31,7 +33,14 @@ public:
         ShapeWizardPage->resize(700, 450);
         widgetShape = new Shape(ShapeWizardPage);
         widgetShape->setObjectName(QStringLiteral("widgetShape"));
-        widgetShape->setGeometry(QRect(30, 180, 326, 128));
+        widgetShape->setGeometry(QRect(30, 150, 326, 128));
+        label = new QLabel(ShapeWizardPage);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(30, 50, 621, 101));
+        QFont font;
+        font.setPointSize(9);
+        label->setFont(font);
+        label->setWordWrap(true);
 
         retranslateUi(ShapeWizardPage);
 
@@ -41,6 +50,7 @@ public:
     void retranslateUi(QWidget *ShapeWizardPage)
     {
         ShapeWizardPage->setWindowTitle(QApplication::translate("ShapeWizardPage", "Form", 0));
+        label->setText(QApplication::translate("ShapeWizardPage", "Ici, vous devez choisir la forme du collage. Vous avez le choix entre choisir une forme pr\303\251d\303\251finie (rectangle, cercle) ou choisir une forme personnalis\303\251e (polygone).", 0));
     } // retranslateUi
 
 };

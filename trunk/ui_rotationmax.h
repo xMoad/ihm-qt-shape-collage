@@ -54,7 +54,7 @@ public:
     void retranslateUi(QWidget *RotationMax)
     {
         RotationMax->setWindowTitle(QApplication::translate("RotationMax", "Form", 0));
-        groupBox_4->setTitle(QApplication::translate("RotationMax", "Rotation", 0));
+        groupBox_4->setTitle(QApplication::translate("RotationMax", "Rotation maximale", 0));
         labelAngle->setText(QApplication::translate("RotationMax", "60\302\260", 0));
     } // retranslateUi
 

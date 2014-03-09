@@ -54,7 +54,7 @@ public:
 
     void retranslateUi(QDialog *DialogPolygon)
     {
-        DialogPolygon->setWindowTitle(QApplication::translate("DialogPolygon", "Dialog", 0));
+        DialogPolygon->setWindowTitle(QApplication::translate("DialogPolygon", "Forme personalis\303\251e", 0));
         labelImage->setText(QString());
         pushButtonReinitPolygon->setText(QApplication::translate("DialogPolygon", "R\303\251initialiser", 0));
     } // retranslateUi
