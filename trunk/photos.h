@@ -21,8 +21,6 @@ public:
     inline QList<QImage> * getListPhotos() { return &mListPhotos; }
     inline int countListPhotos() { return mListPhotos.count(); }
 
-    Photos &operator =(const Photos &);
-
     void addPhotos();
     void clearListPhotos();
     void setWizardLayout();

@@ -17,11 +17,6 @@ Photos::~Photos()
     delete ui;
 }
 
-Photos& Photos::operator =(const Photos &photos)
-{
-    return *this;
-}
-
 void Photos::setWizardLayout()
 {
     ui->listWidgetImages->setFixedHeight(230);
