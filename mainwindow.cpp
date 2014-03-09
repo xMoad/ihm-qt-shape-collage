@@ -83,7 +83,9 @@ void MainWindow::on_pushButtonReinitFormeTaille_clicked()
 }
 
 void MainWindow::reinitUI()
-{
+{    
+    ui->widgetPhotos->reinitUI();
+
     ui->widgetShape->reinitUI();
 
     ui->widgetSizes->reinitUI();
@@ -130,7 +132,6 @@ void MainWindow::on_actionNouveau_projet_triggered()
 
     if (ret == QMessageBox::Yes)
     {
-        ui->widgetPhotos->clearListPhotos();
         reinitUI();
         clearApercu();
     }

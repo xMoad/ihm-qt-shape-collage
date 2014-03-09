@@ -37,11 +37,6 @@ public:
     void addPhotos();
 
     /*!
-    *  \brief Ré-initialise la liste des photos chargé par l'utilisateur
-    */
-    void clearListPhotos();
-
-    /*!
     *  \brief Ajuste le widget pour que celui-ci prenne moins de place et puisse être intégré dans l'assistant de création
     */
     void setWizardLayout();
