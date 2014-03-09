@@ -3,7 +3,7 @@
 
 #include <QWizard>
 
-#include "photoswizardpage.h"
+#include "collage.h"
 
 namespace Ui {
 class Wizard;
@@ -17,10 +17,12 @@ public:
     explicit Wizard(QWidget *parent = 0);
     ~Wizard();
 
+    void reinitUI();
     void accept();
     
 private:
     Ui::Wizard *ui;
+    Collage mCollage;
 };
 
 #endif // WIZARD_H

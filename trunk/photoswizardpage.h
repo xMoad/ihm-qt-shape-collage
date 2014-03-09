@@ -16,6 +16,8 @@ class PhotosWizardPage : public QWizardPage
 public:
     explicit PhotosWizardPage(QWidget *parent = 0);
     ~PhotosWizardPage();
+
+    Photos * getWidgetPhotos();
     
 private:
     Ui::PhotosWizardPage *ui;

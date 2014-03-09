@@ -26,6 +26,7 @@ public:
     void addPhotos();
     void clearListPhotos();
     void setWizardLayout();
+    void reinitUI();
 
 signals:
     void nbPhotosChanged();

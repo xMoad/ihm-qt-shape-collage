@@ -11,11 +11,12 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Aide à la création</string>
   </property>
   <widget class="PhotosWizardPage" name="photosWizardPage"/>
   <widget class="ShapeWizardPage" name="shapeWizardPage"/>
   <widget class="SizesWizardPage" name="sizesWizardPage"/>
+  <widget class="CreationWizardPage" name="creationWizardPage"/>
  </widget>
  <customwidgets>
   <customwidget>
@@ -34,6 +35,12 @@
    <class>SizesWizardPage</class>
    <extends>QWizardPage</extends>
    <header location="global">sizeswizardpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CreationWizardPage</class>
+   <extends>QWizardPage</extends>
+   <header location="global">creationwizardpage.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

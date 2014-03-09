@@ -34,6 +34,14 @@ void Photos::setWizardLayout()
     ui->pushButtonAddFromFolder->move(ui->pushButtonAddFromFolder->x(), 289);
 }
 
+void Photos::reinitUI()
+{
+    ui->listWidgetImages->clear();
+    ui->pushButtonClearImagesList->setEnabled(false);
+    mListPhotos.clear();
+    majNbPhotos();
+}
+
 void Photos::majNbPhotos()
 {
     int nbImages = ui->listWidgetImages->count();
@@ -118,10 +126,7 @@ void Photos::on_pushButtonClearImagesList_clicked()
 
     if (ret == QMessageBox::Yes)
     {
-        ui->listWidgetImages->clear();
-        ui->pushButtonClearImagesList->setEnabled(false);
-        mListPhotos.clear();
-        majNbPhotos();
+        reinitUI();
     }
 }
 
