@@ -3,16 +3,16 @@
 
 /*!
  * \file collage.h
- * \brief Collage photos
- * \author Julien JUNG
+ * \brief Collage des photos
+ * \author Julien JUNG & Thomas WINCKELL
  * \version 1.0
  */
 #include <QStringList>
 #include <QPainter>
 
 /*! \class Collage
-   * \brief Classe représentant un collage
-   */
+* \brief Classe représentant un collage
+*/
 class Collage : public QObject
 {
     Q_OBJECT
