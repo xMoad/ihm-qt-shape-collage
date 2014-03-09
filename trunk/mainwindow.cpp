@@ -61,7 +61,7 @@ void MainWindow::majCollage()
     mCollage.setAutoSize(ui->widgetSizes->getAutoSize());
     mCollage.setAutoPhotoSize(ui->widgetSizes->getAutoPhotoSize());
     mCollage.setAutoNbPhotos(ui->widgetSizes->getAutoNbPhotos());
-    mCollage.setAutoDistancePhotos(ui->widgetSizes->getDistancePhotos());
+    mCollage.setAutoDistancePhotos(ui->widgetSizes->getAutoDistancePhotos());
 }
 
 void MainWindow::renderApercu()
