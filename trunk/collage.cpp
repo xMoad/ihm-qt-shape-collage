@@ -256,11 +256,11 @@ void Collage::CalculateSize()
         int h = mPolygon->boundingRect().height();
 
         if(w > h) {
-            mWidth = size;
+            mWidth = size * ((float)w / h);
             mHeight = size * ((float)h / w);
         }
         else {
-            mHeight = size;
+            mHeight = size * ((float)h / w);
             mWidth = size * ((float)w / h);
         }
     }
