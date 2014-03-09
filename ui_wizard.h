@@ -55,7 +55,7 @@ public:
 
     void retranslateUi(QWizard *Wizard)
     {
-        Wizard->setWindowTitle(QApplication::translate("Wizard", "Wizard", 0));
+        Wizard->setWindowTitle(QApplication::translate("Wizard", "Aide \303\240 la cr\303\251ation", 0));
     } // retranslateUi
 
 };

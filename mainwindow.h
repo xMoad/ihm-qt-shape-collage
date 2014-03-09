@@ -9,6 +9,7 @@
 #include "collage.h"
 #include "photos.h"
 #include "wizard.h"
+#include "dialogabout.h"
 
 namespace Ui {
 class MainWindow;
@@ -50,6 +51,7 @@ private:
     Ui::MainWindow *ui;
     Collage mCollage;
     Wizard wizard;
+    DialogAbout dialogAbout;
 
     void reinitUI();
     void clearApercu();

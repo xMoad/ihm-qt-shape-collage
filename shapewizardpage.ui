@@ -17,10 +17,31 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>180</y>
+     <y>150</y>
      <width>326</width>
      <height>128</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>50</y>
+     <width>621</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Ici, vous devez choisir la forme du collage. Vous avez le choix entre choisir une forme prédéfinie (rectangle, cercle) ou choisir une forme personnalisée (polygone).</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

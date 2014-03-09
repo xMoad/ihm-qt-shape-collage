@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QWizardPage>
 #include <rotationmax.h>
 #include <sizes.h>
@@ -25,6 +26,7 @@ class Ui_SizesWizardPage
 public:
     Sizes *widgetSizes;
     RotationMax *widgetRotationMax;
+    QLabel *label;
 
     void setupUi(QWizardPage *SizesWizardPage)
     {
@@ -36,7 +38,14 @@ public:
         widgetSizes->setGeometry(QRect(0, 0, 327, 345));
         widgetRotationMax = new RotationMax(SizesWizardPage);
         widgetRotationMax->setObjectName(QStringLiteral("widgetRotationMax"));
-        widgetRotationMax->setGeometry(QRect(360, 290, 325, 57));
+        widgetRotationMax->setGeometry(QRect(340, 210, 325, 57));
+        label = new QLabel(SizesWizardPage);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(350, 50, 291, 141));
+        QFont font;
+        font.setPointSize(9);
+        label->setFont(font);
+        label->setWordWrap(true);
 
         retranslateUi(SizesWizardPage);
 
@@ -46,6 +55,7 @@ public:
     void retranslateUi(QWizardPage *SizesWizardPage)
     {
         SizesWizardPage->setWindowTitle(QApplication::translate("SizesWizardPage", "WizardPage", 0));
+        label->setText(QApplication::translate("SizesWizardPage", "Ici, vous pouvez modifier les param\303\250tres de tailles des images et du collage, ainsi que la rotation maximale des images", 0));
     } // retranslateUi
 
 };

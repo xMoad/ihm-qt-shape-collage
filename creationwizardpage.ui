@@ -52,6 +52,27 @@
     <string>Sélectionnez le chemin de destination du collage :</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>70</y>
+     <width>551</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Maintenant, il ne vous reste plus qu'à choisir le chemin de destination du collage. Une fois celui-ci sélectionné, le collage sera créé immédiatement après avoir cliqué sur le bouton &quot;Terminer&quot;.</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
