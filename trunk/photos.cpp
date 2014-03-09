@@ -158,10 +158,3 @@ void Photos::on_pushButtonAddFromFolder_clicked()
 
     majNbPhotos();
 }
-
-void Photos::clearListPhotos() {
-    ui->listWidgetImages->clear();
-    mListPhotos.clear();
-    majNbPhotos();
-    ui->pushButtonClearImagesList->setEnabled(false);
-}
