@@ -152,6 +152,8 @@ void MainWindow::on_action_propos_triggered()
 }
 
 void MainWindow::on_actionAide_la_cr_ation_triggered()
-{
+{    
+    wizard.reinitUI();
+    wizard.restart();
     wizard.show();
 }

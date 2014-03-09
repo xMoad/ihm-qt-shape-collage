@@ -3,6 +3,9 @@
 
 #include <QWizardPage>
 
+#include "sizes.h"
+#include "rotationmax.h"
+
 namespace Ui {
 class SizesWizardPage;
 }
@@ -14,6 +17,9 @@ class SizesWizardPage : public QWizardPage
 public:
     explicit SizesWizardPage(QWidget *parent = 0);
     ~SizesWizardPage();
+
+    Sizes * getWidgetSizes();
+    RotationMax * getWidgetRotationMax();
     
 private:
     Ui::SizesWizardPage *ui;

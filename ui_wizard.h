@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QWizard>
+#include <creationwizardpage.h>
 #include <photoswizardpage.h>
 #include <shapewizardpage.h>
 #include <sizeswizardpage.h>
@@ -27,6 +28,7 @@ public:
     PhotosWizardPage *photosWizardPage;
     ShapeWizardPage *shapeWizardPage;
     SizesWizardPage *sizesWizardPage;
+    CreationWizardPage *creationWizardPage;
 
     void setupUi(QWizard *Wizard)
     {
@@ -42,6 +44,9 @@ public:
         sizesWizardPage = new SizesWizardPage();
         sizesWizardPage->setObjectName(QStringLiteral("sizesWizardPage"));
         Wizard->addPage(sizesWizardPage);
+        creationWizardPage = new CreationWizardPage();
+        creationWizardPage->setObjectName(QStringLiteral("creationWizardPage"));
+        Wizard->addPage(creationWizardPage);
 
         retranslateUi(Wizard);
 

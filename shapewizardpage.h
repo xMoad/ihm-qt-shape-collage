@@ -3,6 +3,8 @@
 
 #include <QWizardPage>
 
+#include "shape.h"
+
 namespace Ui {
 class ShapeWizardPage;
 }
@@ -14,6 +16,8 @@ class ShapeWizardPage : public QWizardPage
 public:
     explicit ShapeWizardPage(QWidget *parent = 0);
     ~ShapeWizardPage();
+
+    Shape * getWidgetShape();
     
 private:
     Ui::ShapeWizardPage *ui;

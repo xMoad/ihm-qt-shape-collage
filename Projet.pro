@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     shapewizardpage.cpp \
     sizes.cpp \
     rotationmax.cpp \
-    sizeswizardpage.cpp
+    sizeswizardpage.cpp \
+    creationwizardpage.cpp
 
 HEADERS  += mainwindow.h \
     tools.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     shapewizardpage.h \
     sizes.h \
     rotationmax.h \
-    sizeswizardpage.h
+    sizeswizardpage.h \
+    creationwizardpage.h
 
 FORMS    += mainwindow.ui \
     dialogpolygon.ui \
@@ -48,4 +50,5 @@ FORMS    += mainwindow.ui \
     shapewizardpage.ui \
     sizes.ui \
     rotationmax.ui \
-    sizeswizardpage.ui
+    sizeswizardpage.ui \
+    creationwizardpage.ui

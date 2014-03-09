@@ -36,7 +36,7 @@ public:
         widgetSizes->setGeometry(QRect(0, 0, 327, 345));
         widgetRotationMax = new RotationMax(SizesWizardPage);
         widgetRotationMax->setObjectName(QStringLiteral("widgetRotationMax"));
-        widgetRotationMax->setGeometry(QRect(370, 290, 325, 57));
+        widgetRotationMax->setGeometry(QRect(360, 290, 325, 57));
 
         retranslateUi(SizesWizardPage);
 

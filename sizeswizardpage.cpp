@@ -12,3 +12,13 @@ SizesWizardPage::~SizesWizardPage()
 {
     delete ui;
 }
+
+Sizes * SizesWizardPage::getWidgetSizes()
+{
+    return ui->widgetSizes;
+}
+
+RotationMax * SizesWizardPage::getWidgetRotationMax()
+{
+    return ui->widgetRotationMax;
+}

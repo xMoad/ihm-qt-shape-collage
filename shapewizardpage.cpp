@@ -12,3 +12,8 @@ ShapeWizardPage::~ShapeWizardPage()
 {
     delete ui;
 }
+
+Shape * ShapeWizardPage::getWidgetShape()
+{
+    return ui->widgetShape;
+}

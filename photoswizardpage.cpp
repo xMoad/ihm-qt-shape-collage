@@ -4,6 +4,9 @@
 #include <QLayout>
 #include <QMessageBox>
 
+#include "wizard.h"
+#include "collage.h"
+
 PhotosWizardPage::PhotosWizardPage(QWidget *parent) :
     QWizardPage(parent),
     ui(new Ui::PhotosWizardPage)
@@ -18,4 +21,9 @@ PhotosWizardPage::PhotosWizardPage(QWidget *parent) :
 PhotosWizardPage::~PhotosWizardPage()
 {
     delete ui;
+}
+
+Photos * PhotosWizardPage::getWidgetPhotos()
+{
+    return ui->widgetPhotos;
 }
