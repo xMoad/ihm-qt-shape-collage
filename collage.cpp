@@ -251,18 +251,13 @@ void Collage::CalculateSize()
 {
     if(mAutoSize) {
         CalculateDistancePhotosPx();
-        int size = (qSqrt(mNbPhotos) - 1) * mDistancePhotosPx + qSqrt(2 * mPhotoSize * mPhotoSize);
+        qreal size = (qSqrt(mNbPhotos) - 1) * mDistancePhotosPx + qSqrt(2 * mPhotoSize * mPhotoSize);
         int w = mPolygon->boundingRect().width();
         int h = mPolygon->boundingRect().height();
+        qreal x = qSqrt((size * size) / (w * h));
 
-        if(w > h) {
-            mWidth = size * ((float)w / h);
-            mHeight = size * ((float)h / w);
-        }
-        else {
-            mHeight = size * ((float)h / w);
-            mWidth = size * ((float)w / h);
-        }
+        mWidth = w * x;
+        mHeight = h * x;
     }
 }
 
